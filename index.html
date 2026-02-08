@@ -10,6 +10,15 @@
       rel="stylesheet"
     />
     <script>
+      window.va =
+        window.va ||
+        function () {
+          (window.vaq = window.vaq || []).push(arguments);
+        };
+    </script>
+    <script defer src="/_vercel/insights/script.js"></script>
+
+    <script>
       tailwind.config = {
         darkMode: "class",
         theme: {
@@ -1319,9 +1328,5 @@
       getEl("startGameBtn").onclick = initGame;
       getEl("startRandomBtn").onclick = initGame;
     </script>
-    <script>
-  window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
-</script>
-<script defer src="/_vercel/insights/script.js"></script>
   </body>
 </html>

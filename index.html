@@ -1,0 +1,1323 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Anime to Anime - The Game</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              slate: {
+                850: "#1e293b",
+                900: "#0f172a",
+                950: "#020617",
+              },
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap");
+      body {
+        font-family: "Inter", sans-serif;
+      }
+
+      .card-hover {
+        transition: all 0.2s;
+      }
+      .card-hover:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+        border-color: #3b82f6;
+      }
+
+      /* Loading Spinner */
+      .loader {
+        border: 3px solid #334155;
+        border-radius: 50%;
+        border-top: 3px solid #60a5fa;
+        width: 24px;
+        height: 24px;
+        animation: spin 1s linear infinite;
+      }
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* Custom Scrollbar for Dark Mode */
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #0f172a;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #334155;
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #475569;
+      }
+
+      .fade-in {
+        animation: fadeIn 0.3s ease-in;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .tab-active {
+        background-color: #2563eb;
+        color: white;
+        border-color: #2563eb;
+      }
+      .tab-inactive {
+        background-color: #1e293b;
+        color: #94a3b8;
+        border-color: #334155;
+      }
+      .tab-inactive:hover {
+        background-color: #334155;
+        color: white;
+      }
+    </style>
+  </head>
+  <body class="bg-slate-950 text-gray-100 min-h-screen flex flex-col">
+    <!-- Header -->
+    <header
+      class="bg-slate-900 border-b border-slate-800 sticky top-0 z-50 shadow-lg"
+    >
+      <div
+        class="max-w-5xl mx-auto px-4 py-4 flex justify-between items-center"
+      >
+        <div class="flex items-center gap-3">
+          <div
+            class="w-8 h-8 rounded bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg"
+          >
+            <i class="fa-solid fa-link text-white text-sm"></i>
+          </div>
+          <h1 class="text-xl font-bold tracking-tight">Seiyuu Connect</h1>
+        </div>
+
+        <!-- Game Status (Visible when playing) -->
+        <div
+          id="gameHeaderStats"
+          class="hidden flex items-center gap-4 text-sm font-mono"
+        >
+          <div class="bg-slate-800 px-3 py-1 rounded border border-slate-700">
+            <span class="text-slate-400">Moves:</span>
+            <span id="moveCountHeader" class="text-blue-400 font-bold">0</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="flex-grow container mx-auto px-4 py-8 max-w-5xl relative">
+      <!-- SETUP SCREEN -->
+      <div id="setupScreen" class="max-w-2xl mx-auto fade-in">
+        <div class="text-center mb-8">
+          <h2 class="text-3xl font-bold mb-3 text-white">New Game</h2>
+          <p class="text-slate-400">
+            Connect two anime via their voice actors.
+          </p>
+        </div>
+
+        <!-- Mode Switcher -->
+        <div class="flex justify-center gap-4 mb-8">
+          <button
+            onclick="switchMode('custom')"
+            id="tabCustom"
+            class="tab-active px-6 py-2 rounded-full font-semibold border transition-all shadow-lg flex items-center gap-2"
+          >
+            <i class="fa-solid fa-pen-to-square"></i> Custom Setup
+          </button>
+          <button
+            onclick="switchMode('random')"
+            id="tabRandom"
+            class="tab-inactive px-6 py-2 rounded-full font-semibold border transition-all shadow-lg flex items-center gap-2"
+          >
+            <i class="fa-solid fa-dice"></i> Random Challenge
+          </button>
+        </div>
+
+        <div
+          class="bg-slate-900 rounded-xl border border-slate-800 p-6 shadow-xl relative min-h-[300px]"
+        >
+          <!-- CUSTOM SETUP -->
+          <div id="customSetup" class="space-y-6">
+            <!-- Start Anime Input -->
+            <div class="relative group">
+              <label
+                class="block text-xs font-bold text-blue-400 uppercase tracking-wider mb-2"
+                >Start Anime</label
+              >
+              <div class="relative">
+                <i
+                  class="fa-solid fa-play absolute left-3 top-3.5 text-slate-500 text-sm"
+                ></i>
+                <input
+                  type="text"
+                  id="startInput"
+                  placeholder="e.g. Death Note"
+                  class="w-full pl-9 pr-4 py-3 bg-slate-950 border border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all text-sm text-white placeholder-slate-600"
+                  autocomplete="off"
+                />
+                <div
+                  id="startSuggestions"
+                  class="absolute w-full bg-slate-800 border border-slate-700 rounded-lg shadow-xl mt-1 max-h-60 overflow-y-auto hidden z-20"
+                ></div>
+              </div>
+              <div id="startSelected" class="mt-2 hidden"></div>
+            </div>
+
+            <!-- End Anime Input -->
+            <div class="relative group">
+              <label
+                class="block text-xs font-bold text-red-400 uppercase tracking-wider mb-2"
+                >Target Anime</label
+              >
+              <div class="relative">
+                <i
+                  class="fa-solid fa-bullseye absolute left-3 top-3.5 text-slate-500 text-sm"
+                ></i>
+                <input
+                  type="text"
+                  id="endInput"
+                  placeholder="e.g. Code Geass"
+                  class="w-full pl-9 pr-4 py-3 bg-slate-950 border border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent transition-all text-sm text-white placeholder-slate-600"
+                  autocomplete="off"
+                />
+                <div
+                  id="endSuggestions"
+                  class="absolute w-full bg-slate-800 border border-slate-700 rounded-lg shadow-xl mt-1 max-h-60 overflow-y-auto hidden z-20"
+                ></div>
+              </div>
+              <div id="endSelected" class="mt-2 hidden"></div>
+            </div>
+
+            <div class="pt-4 border-t border-slate-800">
+              <button
+                id="startGameBtn"
+                class="w-full py-3.5 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-lg shadow-lg shadow-blue-900/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed transform active:scale-95"
+              >
+                Start Custom Game
+              </button>
+            </div>
+          </div>
+
+          <!-- RANDOM SETUP -->
+          <div id="randomSetup" class="hidden space-y-6 text-center">
+            <p class="text-sm text-slate-400 mb-4">
+              I will pick two titles from the <strong>Top 1000</strong> popular
+              anime to ensure a connection is possible.
+            </p>
+
+            <div class="grid grid-cols-2 gap-4">
+              <!-- Start Card -->
+              <div
+                class="bg-slate-950 border border-slate-800 rounded-lg p-3 flex flex-col items-center relative group"
+              >
+                <div
+                  id="randStartPlaceholder"
+                  class="w-24 h-36 bg-slate-800 rounded mb-2 flex items-center justify-center text-slate-600"
+                >
+                  <i class="fa-solid fa-question text-3xl"></i>
+                </div>
+                <img
+                  id="randStartImg"
+                  class="w-24 h-36 object-cover rounded mb-2 hidden shadow-md transition-opacity duration-200"
+                />
+                <div class="text-xs font-bold text-blue-400 uppercase">
+                  Start
+                </div>
+                <div
+                  id="randStartName"
+                  class="text-sm font-semibold truncate w-full text-slate-500"
+                >
+                  ???
+                </div>
+                <button
+                  onclick="rollSingle('start')"
+                  id="rerollStart"
+                  class="hidden absolute top-2 right-2 w-7 h-7 bg-slate-800 hover:bg-slate-700 rounded-full flex items-center justify-center text-xs text-white shadow ring-1 ring-slate-700"
+                >
+                  <i class="fa-solid fa-rotate"></i>
+                </button>
+              </div>
+
+              <!-- Target Card -->
+              <div
+                class="bg-slate-950 border border-slate-800 rounded-lg p-3 flex flex-col items-center relative group"
+              >
+                <div
+                  id="randTargetPlaceholder"
+                  class="w-24 h-36 bg-slate-800 rounded mb-2 flex items-center justify-center text-slate-600"
+                >
+                  <i class="fa-solid fa-question text-3xl"></i>
+                </div>
+                <img
+                  id="randTargetImg"
+                  class="w-24 h-36 object-cover rounded mb-2 hidden shadow-md transition-opacity duration-200"
+                />
+                <div class="text-xs font-bold text-red-400 uppercase">
+                  Target
+                </div>
+                <div
+                  id="randTargetName"
+                  class="text-sm font-semibold truncate w-full text-slate-500"
+                >
+                  ???
+                </div>
+                <button
+                  onclick="rollSingle('target')"
+                  id="rerollTarget"
+                  class="hidden absolute top-2 right-2 w-7 h-7 bg-slate-800 hover:bg-slate-700 rounded-full flex items-center justify-center text-xs text-white shadow ring-1 ring-slate-700"
+                >
+                  <i class="fa-solid fa-rotate"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="pt-4 border-t border-slate-800 space-y-3">
+              <button
+                onclick="rollRandomAnime()"
+                id="rollBtn"
+                class="w-full py-3 bg-purple-600 hover:bg-purple-500 text-white font-bold rounded-lg shadow-lg shadow-purple-900/20 transition-all transform active:scale-95"
+              >
+                <i class="fa-solid fa-dice mr-2"></i> Roll Anime
+              </button>
+              <button
+                id="startRandomBtn"
+                disabled
+                class="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-lg shadow-lg shadow-blue-900/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed transform active:scale-95 hidden"
+              >
+                Start Challenge
+              </button>
+            </div>
+
+            <div id="rollStatus" class="text-xs text-slate-500 h-4"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- GAME SCREEN -->
+      <div
+        id="gameScreen"
+        class="hidden flex flex-col md:flex-row gap-6 h-[calc(100vh-140px)]"
+      >
+        <!-- Left Panel -->
+        <div class="w-full md:w-1/3 flex flex-col gap-4">
+          <div
+            class="bg-slate-900 rounded-xl border border-slate-800 p-4 shadow-lg flex items-center gap-4"
+          >
+            <div
+              class="w-12 h-16 bg-slate-800 rounded overflow-hidden flex-shrink-0"
+            >
+              <img
+                id="targetThumb"
+                src=""
+                class="w-full h-full object-cover opacity-80"
+              />
+            </div>
+            <div>
+              <div
+                class="text-xs font-bold text-red-400 uppercase tracking-wider"
+              >
+                Target Goal
+              </div>
+              <h3
+                id="targetTitle"
+                class="font-bold text-sm leading-tight text-white line-clamp-2"
+              ></h3>
+            </div>
+          </div>
+
+          <!-- Hint Button -->
+          <button
+            id="hintBtn"
+            onclick="showHint()"
+            class="w-full py-2 px-3 bg-indigo-900/50 hover:bg-indigo-900 border border-indigo-700 text-indigo-300 rounded-lg text-sm font-semibold transition-all flex items-center justify-center gap-2"
+          >
+            <i class="fa-solid fa-lightbulb"></i>
+            <span id="hintBtnText">Show Hint (Top 3)</span>
+          </button>
+
+          <div
+            class="flex-grow bg-slate-900 rounded-xl border border-slate-800 p-4 shadow-lg overflow-hidden flex flex-col"
+          >
+            <div
+              class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3 pb-2 border-b border-slate-800"
+            >
+              Your Path
+            </div>
+            <div
+              id="pathLog"
+              class="flex-grow overflow-y-auto space-y-3 pr-2"
+            ></div>
+          </div>
+
+          <button
+            onclick="resetGame()"
+            class="py-2 px-4 bg-slate-800 hover:bg-red-900/30 text-slate-400 hover:text-red-400 rounded-lg text-sm border border-slate-700 transition-colors"
+          >
+            <i class="fa-solid fa-arrow-left mr-2"></i> Quit / Restart
+          </button>
+        </div>
+
+        <!-- Right Panel -->
+        <div
+          class="w-full md:w-2/3 bg-slate-900 rounded-xl border border-slate-800 shadow-xl flex flex-col overflow-hidden relative"
+        >
+          <div
+            class="p-4 border-b border-slate-800 bg-slate-900/50 backdrop-blur-sm z-10"
+          >
+            <div class="flex items-center gap-3 mb-1">
+              <span
+                id="currentTypeBadge"
+                class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-blue-900 text-blue-200"
+                >Current Anime</span
+              >
+            </div>
+            <h2
+              id="currentMainTitle"
+              class="text-2xl font-bold text-white leading-tight mb-3"
+            ></h2>
+            <div class="relative">
+              <i
+                class="fa-solid fa-search absolute left-3 top-3 text-slate-500 text-sm"
+              ></i>
+              <input
+                type="text"
+                id="filterInput"
+                placeholder="Filter by Name or Character..."
+                class="w-full pl-9 pr-4 py-2 bg-slate-950 border border-slate-700 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 text-sm text-white placeholder-slate-600 transition-colors"
+              />
+            </div>
+          </div>
+
+          <div
+            id="loadingOverlay"
+            class="absolute inset-0 bg-slate-900/90 z-20 flex flex-col items-center justify-center hidden"
+          >
+            <div class="loader mb-4"></div>
+            <p id="loadingText" class="text-slate-400 text-sm animate-pulse">
+              Fetching Data...
+            </p>
+          </div>
+
+          <div
+            id="choiceList"
+            class="flex-grow overflow-y-auto p-4 grid grid-cols-1 sm:grid-cols-2 gap-3 content-start"
+          ></div>
+        </div>
+      </div>
+
+      <!-- Help Button (Fixed Bottom Right) -->
+      <button
+        onclick="openHelp()"
+        class="fixed bottom-6 right-6 w-12 h-12 bg-blue-600 hover:bg-blue-500 rounded-full shadow-lg flex items-center justify-center text-white transition-transform hover:scale-110 z-40"
+        title="How to Play"
+      >
+        <i class="fa-solid fa-question text-xl"></i>
+      </button>
+
+      <!-- Help Modal -->
+      <div
+        id="helpModal"
+        class="hidden fixed inset-0 z-[70] flex items-center justify-center bg-slate-950/95 p-4 fade-in"
+      >
+        <div
+          class="max-w-md w-full bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-2xl relative"
+        >
+          <div class="flex justify-between items-center mb-4">
+            <h3 class="text-xl font-bold text-white">How to Play</h3>
+            <button
+              onclick="closeHelp()"
+              class="text-slate-400 hover:text-white"
+            >
+              <i class="fa-solid fa-times"></i>
+            </button>
+          </div>
+          <div class="space-y-4 text-slate-300 text-sm">
+            <p>
+              <strong>Goal:</strong> Connect the <strong>Start Anime</strong> to
+              the <strong>Target Anime</strong> using shared Voice Actors.
+            </p>
+            <ol class="list-decimal list-inside space-y-2 ml-1">
+              <li>
+                Click on a <strong>Voice Actor</strong> (Seiyuu) from the
+                current anime's cast.
+              </li>
+              <li>You will see a list of other anime they have voiced in.</li>
+              <li>Click on an <strong>Anime</strong> to move to it.</li>
+              <li>Repeat until you reach the Target Anime!</li>
+            </ol>
+            <div class="bg-slate-800 p-3 rounded border border-slate-700 mt-4">
+              <p class="text-xs text-slate-400">
+                <i class="fa-solid fa-lightbulb text-yellow-500 mr-1"></i>
+                <strong>Tip:</strong> Use the "Show Hint" button if you get
+                stuck, but it has a cooldown!
+              </p>
+            </div>
+          </div>
+          <button
+            onclick="closeHelp()"
+            class="mt-6 w-full py-3 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-lg"
+          >
+            Got it!
+          </button>
+        </div>
+      </div>
+
+      <!-- Hint Modal -->
+      <div
+        id="hintModal"
+        class="hidden fixed inset-0 z-[60] flex items-center justify-center bg-slate-950/95 p-4 fade-in"
+      >
+        <div
+          class="max-w-lg w-full bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-2xl relative"
+        >
+          <div class="flex justify-between items-center mb-4">
+            <h3
+              class="text-lg font-bold text-indigo-400 flex items-center gap-2"
+            >
+              <i class="fa-solid fa-star"></i> Target Anime Cast
+            </h3>
+            <button
+              onclick="closeHint()"
+              class="text-slate-400 hover:text-white"
+            >
+              <i class="fa-solid fa-times"></i>
+            </button>
+          </div>
+          <p class="text-xs text-slate-500 mb-4">
+            Try finding connections to these voice actors.
+          </p>
+          <div
+            id="hintList"
+            class="grid grid-cols-1 gap-3 max-h-[60vh] overflow-y-auto"
+          >
+            <!-- Hints injected here -->
+          </div>
+          <button
+            onclick="closeHint()"
+            class="mt-4 w-full py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-sm"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+
+      <!-- WIN SCREEN -->
+      <div
+        id="winScreen"
+        class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-950/95 p-4 fade-in"
+      >
+        <div
+          class="max-w-md w-full bg-slate-900 border border-slate-800 rounded-2xl p-8 text-center shadow-2xl relative overflow-hidden"
+        >
+          <div
+            class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-red-500"
+          ></div>
+          <div
+            class="w-20 h-20 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-6 text-green-400 text-3xl"
+          >
+            <i class="fa-solid fa-trophy"></i>
+          </div>
+          <h2 class="text-3xl font-bold text-white mb-2">Victory!</h2>
+          <p class="text-slate-400 mb-6">
+            You connected the anime successfully.
+          </p>
+          <div class="bg-slate-950 rounded-lg p-4 mb-8 border border-slate-800">
+            <div class="text-sm text-slate-500 uppercase tracking-wider mb-1">
+              Total Moves
+            </div>
+            <div id="finalMoveCount" class="text-4xl font-bold text-blue-400">
+              0
+            </div>
+          </div>
+          <button
+            onclick="resetGame()"
+            class="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-lg transition-colors"
+          >
+            Play Again
+          </button>
+        </div>
+      </div>
+    </main>
+
+    <!-- JS Logic -->
+    <script>
+      // --- Game State ---
+      const state = {
+        step: 0,
+        startAnime: null,
+        targetAnime: null,
+        history: [],
+        currentData: null,
+        currentType: null,
+        hintLevel: 0, // 0 = not used, 1 = used level 1
+        lastHintMove: -1, // move number when hint was last used
+      };
+
+      const JIKAN_BASE = "https://api.jikan.moe/v4";
+      const getEl = (id) => document.getElementById(id);
+      const delay = (ms) => new Promise((res) => setTimeout(res, ms));
+
+      // --- Help Modal Logic ---
+      window.openHelp = function () {
+        getEl("helpModal").classList.remove("hidden");
+      };
+      window.closeHelp = function () {
+        getEl("helpModal").classList.add("hidden");
+      };
+
+      // --- Tab Switching ---
+      window.switchMode = function (mode) {
+        if (mode === "custom") {
+          getEl("customSetup").classList.remove("hidden");
+          getEl("randomSetup").classList.add("hidden");
+          getEl("tabCustom").classList.replace("tab-inactive", "tab-active");
+          getEl("tabRandom").classList.replace("tab-active", "tab-inactive");
+        } else {
+          getEl("customSetup").classList.add("hidden");
+          getEl("randomSetup").classList.remove("hidden");
+          getEl("tabCustom").classList.replace("tab-active", "tab-inactive");
+          getEl("tabRandom").classList.replace("tab-inactive", "tab-active");
+        }
+      };
+
+      // --- Random Logic ---
+      async function fetchRandomTopAnime() {
+        // Fetch a random page from top anime (pages 1-20 to ensure popularity/playability)
+        const randomPage = Math.floor(Math.random() * 20) + 1;
+        try {
+          // ADDED: Cache Busting (&cb=timestamp) to prevent getting exact same response
+          const res = await fetch(
+            `${JIKAN_BASE}/top/anime?page=${randomPage}&limit=25&cb=${Date.now()}`,
+          );
+          if (!res.ok) throw new Error("API Limit");
+          const data = await res.json();
+          // Pick random item
+          const randomIndex = Math.floor(Math.random() * data.data.length);
+          return data.data[randomIndex];
+        } catch (e) {
+          console.error(e);
+          return null;
+        }
+      }
+
+      async function rollSingle(which) {
+        const CapType = which.charAt(0).toUpperCase() + which.slice(1);
+        const btn = getEl(`reroll${CapType}`);
+        const img = getEl(`rand${CapType}Img`);
+
+        // UI Feedback
+        const originalIcon = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML =
+          '<div class="loader w-3 h-3 border-2 border-white"></div>';
+        img.style.opacity = "0.5";
+        getEl("rollStatus").innerText = `Rolling ${which} anime...`;
+
+        const anime = await fetchRandomTopAnime();
+
+        // Restore UI
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-rotate"></i>';
+        img.style.opacity = "1";
+
+        if (anime) {
+          // Prevent duplicate
+          if (
+            which === "start" &&
+            state.targetAnime &&
+            anime.mal_id === state.targetAnime.mal_id
+          ) {
+            rollSingle(which); // retry recursively
+            return;
+          }
+          if (
+            which === "target" &&
+            state.startAnime &&
+            anime.mal_id === state.startAnime.mal_id
+          ) {
+            rollSingle(which);
+            return;
+          }
+
+          setRandomCard(which, anime);
+          getEl("rollStatus").innerText = "";
+        } else {
+          getEl("rollStatus").innerText = "Failed to fetch. Try again.";
+        }
+      }
+
+      async function rollRandomAnime() {
+        getEl("rollBtn").disabled = true;
+        getEl("rollBtn").innerHTML =
+          '<div class="loader w-4 h-4 border-2"></div> Rolling...';
+        getEl("startRandomBtn").classList.add("hidden");
+
+        // Clear current
+        state.startAnime = null;
+        state.targetAnime = null;
+        resetRandomCard("start");
+        resetRandomCard("target");
+
+        // Wait a bit to prevent rate limit issues
+        const start = await fetchRandomTopAnime();
+        await delay(400);
+        let target = await fetchRandomTopAnime();
+
+        // Ensure they are different
+        while (target && start && target.mal_id === start.mal_id) {
+          await delay(400);
+          target = await fetchRandomTopAnime();
+        }
+
+        if (start && target) {
+          setRandomCard("start", start);
+          setRandomCard("target", target);
+
+          getEl("rollBtn").innerHTML =
+            '<i class="fa-solid fa-rotate mr-2"></i> Reroll Both';
+          getEl("startRandomBtn").classList.remove("hidden");
+          getEl("startRandomBtn").disabled = false;
+        } else {
+          getEl("rollStatus").innerText = "API Error. Please wait a moment.";
+          getEl("rollBtn").innerHTML =
+            '<i class="fa-solid fa-dice mr-2"></i> Roll Anime';
+        }
+        getEl("rollBtn").disabled = false;
+      }
+
+      function setRandomCard(type, anime) {
+        if (type === "start") state.startAnime = anime;
+        else state.targetAnime = anime;
+
+        const CapType = type.charAt(0).toUpperCase() + type.slice(1);
+        getEl(`rand${CapType}Placeholder`).classList.add("hidden");
+        const img = getEl(`rand${CapType}Img`);
+        img.src = anime.images.jpg.image_url;
+        img.classList.remove("hidden");
+
+        const name = getEl(`rand${CapType}Name`);
+        name.innerText = anime.title;
+        name.classList.remove("text-slate-500");
+        name.classList.add("text-white");
+
+        getEl(`reroll${CapType}`).classList.remove("hidden");
+
+        checkRandomReady();
+      }
+
+      function resetRandomCard(type) {
+        const CapType = type.charAt(0).toUpperCase() + type.slice(1);
+        getEl(`rand${CapType}Placeholder`).classList.remove("hidden");
+        getEl(`rand${CapType}Img`).classList.add("hidden");
+        getEl(`rand${CapType}Name`).innerText = "???";
+        getEl(`rand${CapType}Name`).classList.add("text-slate-500");
+        getEl(`reroll${CapType}`).classList.add("hidden");
+      }
+
+      function checkRandomReady() {
+        if (state.startAnime && state.targetAnime) {
+          getEl("startRandomBtn").disabled = false;
+          getEl("startRandomBtn").classList.remove("hidden");
+        }
+      }
+
+      // --- Core Game Functions ---
+
+      function setLoading(loading, text = "Fetching Data...") {
+        const overlay = getEl("loadingOverlay");
+        const textEl = getEl("loadingText");
+        if (loading) {
+          textEl.innerText = text;
+          overlay.classList.remove("hidden");
+        } else {
+          overlay.classList.add("hidden");
+        }
+      }
+
+      // Search Filter
+      getEl("filterInput").addEventListener("input", (e) => {
+        const term = e.target.value.toLowerCase().trim();
+        const container = getEl("choiceList");
+        const buttons = container.getElementsByTagName("button");
+
+        Array.from(buttons).forEach((btn) => {
+          const filterText = btn.dataset.filterText || "";
+          if (filterText.includes(term)) {
+            btn.classList.remove("hidden");
+          } else {
+            btn.classList.add("hidden");
+          }
+        });
+      });
+
+      // API
+      let lastRequestTime = 0;
+      async function fetchJikan(endpoint) {
+        const now = Date.now();
+        const timeSinceLast = now - lastRequestTime;
+        if (timeSinceLast < 350) await delay(350 - timeSinceLast);
+        lastRequestTime = Date.now();
+        try {
+          const res = await fetch(`${JIKAN_BASE}${endpoint}`);
+          if (!res.ok) {
+            if (res.status === 429) {
+              await delay(1000);
+              return fetchJikan(endpoint);
+            }
+            throw new Error(`API Error ${res.status}`);
+          }
+          return await res.json();
+        } catch (err) {
+          console.error(err);
+          return null;
+        }
+      }
+
+      async function searchAnime(query) {
+        const data = await fetchJikan(
+          `/anime?q=${encodeURIComponent(query)}&limit=5&sfw=true&order_by=popularity`,
+        );
+        return data ? data.data : [];
+      }
+
+      async function getAnimeStaff(animeId) {
+        const data = await fetchJikan(`/anime/${animeId}/characters`);
+        if (!data) return [];
+        return data.data.flatMap((char) => {
+          const japVA = char.voice_actors.find(
+            (va) => va.language === "Japanese",
+          );
+          if (!japVA) return [];
+          return {
+            id: japVA.person.mal_id,
+            name: japVA.person.name,
+            image: japVA.person.images.jpg.image_url,
+            role: char.role,
+            characterName: char.character.name,
+          };
+        });
+      }
+
+      async function getPersonRoles(personId) {
+        let allRoles = [];
+        let page = 1;
+        let hasNext = true;
+        // Fetch up to 5 pages
+        while (hasNext && page <= 5) {
+          if (page > 1) setLoading(true, `Fetching page ${page}...`);
+          const data = await fetchJikan(
+            `/people/${personId}/voices?page=${page}`,
+          );
+          if (!data || !data.data) break;
+          const roles = data.data.map((item) => ({
+            id: item.anime.mal_id,
+            title: item.anime.title,
+            image: item.anime.images.jpg.image_url,
+            role: item.role,
+            character: item.character.name,
+          }));
+          allRoles = [...allRoles, ...roles];
+          hasNext = data.pagination?.has_next_page || false;
+          page++;
+        }
+        return allRoles;
+      }
+
+      // --- HINT SYSTEM LOGIC ---
+
+      function checkHintAvailability() {
+        const moves = state.history.length - 1;
+        const btn = getEl("hintBtn");
+        const txt = getEl("hintBtnText");
+
+        if (!btn || !txt) return; // Guard clause added
+
+        if (state.hintLevel === 0) {
+          // Level 1: Ready immediately
+          btn.disabled = false;
+          btn.classList.remove("opacity-50", "cursor-not-allowed");
+          txt.innerText = "Show Hint (Top 3)";
+        } else if (state.hintLevel === 1) {
+          // Level 2: Cooldown check
+          const diff = moves - state.lastHintMove;
+          const required = 3;
+          if (diff >= required) {
+            btn.disabled = false;
+            btn.classList.remove("opacity-50", "cursor-not-allowed");
+            txt.innerText = "Show Hint (Top 5)";
+          } else {
+            btn.disabled = true;
+            btn.classList.add("opacity-50", "cursor-not-allowed");
+            txt.innerText = `Wait ${required - diff} moves`;
+          }
+        } else {
+          // Max level reached, keep available showing 5
+          btn.disabled = false;
+          btn.classList.remove("opacity-50", "cursor-not-allowed");
+          txt.innerText = "Show Hint (Top 5)";
+        }
+      }
+
+      async function showHint() {
+        if (!state.targetAnime) return;
+
+        const btn = getEl("hintBtn");
+        btn.innerHTML =
+          '<div class="loader w-3 h-3 border-2 border-indigo-300"></div>';
+
+        // Re-fetch target data to ensure we have the list
+        // We use getAnimeStaff because it filters for Japanese VA automatically
+        const characters = await getAnimeStaff(state.targetAnime.mal_id);
+
+        // Process Hints
+        // Filter main cast, deduplicate
+        const uniqueVAs = new Map();
+        characters.forEach((item) => {
+          if (!uniqueVAs.has(item.id)) uniqueVAs.set(item.id, item);
+          else if (
+            uniqueVAs.get(item.id).role !== "Main" &&
+            item.role === "Main"
+          )
+            uniqueVAs.set(item.id, item);
+        });
+
+        const sortedList = Array.from(uniqueVAs.values()).sort((a, b) => {
+          if (a.role === "Main" && b.role !== "Main") return -1;
+          if (a.role !== "Main" && b.role === "Main") return 1;
+          return 0;
+        });
+
+        // Determine limit
+        let limit = 3;
+        if (state.hintLevel >= 1) limit = 5;
+
+        // Render Modal
+        const hintList = getEl("hintList");
+        hintList.innerHTML = "";
+
+        sortedList.slice(0, limit).forEach((va) => {
+          const div = document.createElement("div");
+          div.className =
+            "flex items-center gap-3 bg-slate-800 p-2 rounded border border-slate-700";
+          div.innerHTML = `
+                    <img src="${va.image}" class="w-10 h-10 rounded-full object-cover">
+                    <div>
+                        <div class="text-sm font-bold text-white">${va.name}</div>
+                        <div class="text-xs text-slate-400">Voiced ${va.characterName}</div>
+                    </div>
+                `;
+          hintList.appendChild(div);
+        });
+
+        getEl("hintModal").classList.remove("hidden");
+
+        // Restore button structure BEFORE updating state/checking availability
+        btn.innerHTML =
+          '<i class="fa-solid fa-lightbulb"></i> <span id="hintBtnText"></span>';
+
+        // Update State
+        if (state.hintLevel === 0) {
+          state.hintLevel = 1;
+          state.lastHintMove = state.history.length - 1;
+        }
+
+        // Restore Button UI & Check Status
+        checkHintAvailability();
+      }
+
+      window.closeHint = function () {
+        getEl("hintModal").classList.add("hidden");
+      };
+
+      // --- MAIN FUNCTIONS ---
+
+      function initGame() {
+        if (!state.startAnime || !state.targetAnime) return;
+        state.step = 1;
+        state.history = [];
+        state.currentType = "anime";
+        state.currentData = state.startAnime;
+
+        // Reset Hint State
+        state.hintLevel = 0;
+        state.lastHintMove = 0;
+
+        getEl("setupScreen").classList.add("hidden");
+        getEl("gameScreen").classList.remove("hidden");
+        getEl("gameHeaderStats").classList.remove("hidden");
+
+        getEl("targetTitle").innerText = state.targetAnime.title;
+        getEl("targetThumb").src = state.targetAnime.images.jpg.image_url;
+
+        checkHintAvailability(); // Initialize button state
+
+        updateGameState(state.startAnime, "anime");
+      }
+
+      async function updateGameState(newData, type) {
+        state.currentData = newData;
+        state.currentType = type;
+        state.history.push({ type, data: newData });
+        getEl("filterInput").value = "";
+
+        // Update Hints on every move
+        checkHintAvailability();
+
+        renderHistory();
+        renderHeader();
+
+        setLoading(true, "Loading...");
+        const listEl = getEl("choiceList");
+        listEl.innerHTML = "";
+
+        if (type === "anime" && newData.mal_id === state.targetAnime.mal_id) {
+          setLoading(false);
+          showWinScreen();
+          return;
+        }
+
+        if (type === "anime") {
+          const characters = await getAnimeStaff(newData.mal_id);
+          renderSeiyuuList(characters);
+        } else {
+          const roles = await getPersonRoles(newData.mal_id);
+          renderAnimeList(roles);
+        }
+        setLoading(false);
+      }
+
+      function renderHeader() {
+        const titleEl = getEl("currentMainTitle");
+        const typeBadge = getEl("currentTypeBadge");
+        const moveCount = getEl("moveCountHeader");
+        moveCount.innerText = state.history.length - 1;
+
+        if (state.currentType === "anime") {
+          titleEl.innerText = state.currentData.title;
+          typeBadge.innerText = "CURRENT ANIME";
+          typeBadge.className =
+            "px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-blue-900 text-blue-200";
+        } else {
+          titleEl.innerText = state.currentData.name;
+          typeBadge.innerText = "CURRENT SEIYUU";
+          typeBadge.className =
+            "px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-purple-900 text-purple-200";
+        }
+      }
+
+      function renderHistory() {
+        const container = getEl("pathLog");
+        container.innerHTML = "";
+        state.history.forEach((step, idx) => {
+          const isLast = idx === state.history.length - 1;
+          const div = document.createElement("div");
+          div.className = `flex items-center gap-3 p-2 rounded-lg ${isLast ? "bg-slate-800 border border-slate-700" : "opacity-60"}`;
+
+          let imgUrl =
+            step.type === "anime"
+              ? step.data.images.jpg.small_image_url
+              : step.data.images?.jpg?.image_url || step.data.image;
+          let mainText =
+            step.type === "anime" ? step.data.title : step.data.name;
+          let subText =
+            idx === 0
+              ? "Start"
+              : step.type === "anime"
+                ? "Anime"
+                : "Voice Actor";
+
+          div.innerHTML = `
+                    <div class="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 bg-slate-950">
+                        <img src="${imgUrl}" class="w-full h-full object-cover">
+                    </div>
+                    <div class="min-w-0">
+                        <div class="text-xs font-bold text-slate-400 uppercase">${subText}</div>
+                        <div class="text-sm font-semibold truncate text-white">${mainText}</div>
+                    </div>
+                `;
+          container.appendChild(div);
+        });
+        container.scrollTop = container.scrollHeight;
+      }
+
+      function renderSeiyuuList(list) {
+        const container = getEl("choiceList");
+        const uniqueVAs = new Map();
+        list.forEach((item) => {
+          if (!uniqueVAs.has(item.id)) uniqueVAs.set(item.id, item);
+          else if (
+            uniqueVAs.get(item.id).role !== "Main" &&
+            item.role === "Main"
+          )
+            uniqueVAs.set(item.id, item);
+        });
+
+        const sortedList = Array.from(uniqueVAs.values()).sort((a, b) => {
+          if (a.role === "Main" && b.role !== "Main") return -1;
+          if (a.role !== "Main" && b.role === "Main") return 1;
+          return 0;
+        });
+
+        if (sortedList.length === 0) {
+          container.innerHTML = `<div class="col-span-2 text-center text-slate-500 py-10">No Voice Actors found with Japanese language data.</div>`;
+          return;
+        }
+
+        sortedList.forEach((va) => {
+          const btn = document.createElement("button");
+          btn.className =
+            "flex items-center gap-3 p-3 rounded-lg bg-slate-800 border border-slate-700 hover:bg-slate-700 text-left card-hover group";
+          const filterText = (va.name + " " + va.characterName).toLowerCase();
+          btn.dataset.filterText = filterText;
+          btn.onclick = () => {
+            updateGameState(
+              {
+                mal_id: va.id,
+                name: va.name,
+                images: { jpg: { image_url: va.image } },
+              },
+              "person",
+            );
+          };
+
+          const isMain = va.role === "Main";
+          btn.innerHTML = `
+                    <img src="${va.image}" class="w-12 h-12 rounded-full object-cover border-2 ${isMain ? "border-purple-500" : "border-slate-600"}">
+                    <div class="flex-grow min-w-0">
+                        <div class="text-sm font-bold text-white group-hover:text-blue-400 transition-colors">${va.name}</div>
+                        <div class="text-xs text-slate-400 flex items-center gap-1">
+                            <span class="${isMain ? "text-purple-400 font-semibold" : ""}">${va.role}</span>
+                            <span class="w-1 h-1 rounded-full bg-slate-600"></span>
+                            <span class="truncate">as ${va.characterName}</span>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-slate-600 group-hover:text-white"></i>
+                `;
+          container.appendChild(btn);
+        });
+      }
+
+      function renderAnimeList(list) {
+        const container = getEl("choiceList");
+        const uniqueAnime = new Map();
+        list.forEach((item) => {
+          if (!uniqueAnime.has(item.id)) uniqueAnime.set(item.id, item);
+          else if (
+            uniqueAnime.get(item.id).role !== "Main" &&
+            item.role === "Main"
+          )
+            uniqueAnime.set(item.id, item);
+        });
+
+        const sortedList = Array.from(uniqueAnime.values()).sort((a, b) => {
+          if (a.role === "Main" && b.role !== "Main") return -1;
+          if (a.role !== "Main" && b.role === "Main") return 1;
+          return 0;
+        });
+
+        if (sortedList.length === 0) {
+          container.innerHTML = `<div class="col-span-2 text-center text-slate-500 py-10">No anime roles found.</div>`;
+          return;
+        }
+
+        sortedList.forEach((anime) => {
+          const btn = document.createElement("button");
+          btn.className =
+            "flex items-center gap-3 p-3 rounded-lg bg-slate-800 border border-slate-700 hover:bg-slate-700 text-left card-hover group";
+          const charName = anime.character || "";
+          const filterText = (anime.title + " " + charName).toLowerCase();
+          btn.dataset.filterText = filterText;
+
+          btn.onclick = () => {
+            updateGameState(
+              {
+                mal_id: anime.id,
+                title: anime.title,
+                images: {
+                  jpg: { image_url: anime.image, small_image_url: anime.image },
+                },
+              },
+              "anime",
+            );
+          };
+
+          const isMain = anime.role === "Main";
+          const isTarget = anime.id === state.targetAnime.mal_id;
+          const charNameDisplay = anime.character || "Unknown Character";
+
+          btn.innerHTML = `
+                    <img src="${anime.image}" class="w-10 h-14 rounded object-cover shadow-sm">
+                    <div class="flex-grow min-w-0">
+                        <div class="text-sm font-bold text-white group-hover:text-blue-400 transition-colors truncate">${anime.title}</div>
+                        <div class="text-xs text-slate-400">
+                             <span class="${isMain ? "text-blue-400 font-semibold" : ""}">${anime.role}</span>
+                             <span class="text-slate-600 mx-1">•</span>
+                             <span class="text-slate-500">Voiced ${charNameDisplay}</span>
+                        </div>
+                    </div>
+                    ${isTarget ? '<div class="px-2 py-1 bg-red-600 text-white text-xs font-bold rounded animate-pulse">GOAL</div>' : ""}
+                `;
+          container.appendChild(btn);
+        });
+      }
+
+      function showWinScreen() {
+        getEl("winScreen").classList.remove("hidden");
+        getEl("finalMoveCount").innerText = state.history.length - 1;
+      }
+
+      function resetGame() {
+        state.step = 0;
+        state.startAnime = null;
+        state.targetAnime = null;
+        state.history = [];
+
+        getEl("startInput").value = "";
+        getEl("endInput").value = "";
+        getEl("startInput").classList.remove("hidden");
+        getEl("endInput").classList.remove("hidden");
+        getEl("startSelected").classList.add("hidden");
+        getEl("endSelected").classList.add("hidden");
+        getEl("startGameBtn").disabled = true;
+        getEl("startGameBtn").classList.add("opacity-50", "cursor-not-allowed");
+
+        resetRandomCard("start");
+        resetRandomCard("target");
+        getEl("startRandomBtn").classList.add("hidden");
+        getEl("rollBtn").innerHTML =
+          '<i class="fa-solid fa-dice mr-2"></i> Roll Anime';
+
+        getEl("setupScreen").classList.remove("hidden");
+        getEl("gameScreen").classList.add("hidden");
+        getEl("winScreen").classList.add("hidden");
+        getEl("gameHeaderStats").classList.add("hidden");
+      }
+
+      // --- Autocomplete (reused) ---
+      function setupAutocomplete(inputId, resultsId, selectedId, stateKey) {
+        const input = getEl(inputId);
+        const results = getEl(resultsId);
+        const selectedDiv = getEl(selectedId);
+        let debounceTimer;
+
+        input.addEventListener("input", (e) => {
+          clearTimeout(debounceTimer);
+          const query = e.target.value;
+          if (query.length < 3) {
+            results.classList.add("hidden");
+            return;
+          }
+
+          debounceTimer = setTimeout(async () => {
+            const data = await searchAnime(query);
+            results.innerHTML = "";
+            results.classList.remove("hidden");
+
+            if (data.length === 0) {
+              results.innerHTML =
+                '<div class="p-3 text-sm text-slate-400">No results found</div>';
+              return;
+            }
+
+            data.forEach((anime) => {
+              const div = document.createElement("div");
+              div.className =
+                "p-3 hover:bg-slate-700 cursor-pointer flex items-center gap-3 border-b border-slate-700 last:border-0";
+              div.innerHTML = `
+                            <img src="${anime.images.jpg.small_image_url}" class="w-8 h-12 object-cover rounded">
+                            <div class="text-sm font-medium text-gray-200">${anime.title}</div>
+                        `;
+              div.onclick = () => {
+                state[stateKey] = anime;
+                input.value = "";
+                results.classList.add("hidden");
+
+                const colorClass = stateKey === "startAnime" ? "blue" : "red";
+                selectedDiv.innerHTML = `
+                                <div class="flex items-center justify-between bg-slate-800 border border-${colorClass}-900/50 p-2 rounded-lg">
+                                    <div class="flex items-center gap-3">
+                                        <img src="${anime.images.jpg.small_image_url}" class="w-8 h-10 object-cover rounded">
+                                        <span class="text-sm font-semibold text-white">${anime.title}</span>
+                                    </div>
+                                    <button class="text-slate-400 hover:text-red-500 p-1" onclick="clearSelection('${inputId}', '${selectedId}', '${stateKey}')">
+                                        <i class="fa-solid fa-times"></i>
+                                    </button>
+                                </div>
+                            `;
+                selectedDiv.classList.remove("hidden");
+                input.classList.add("hidden");
+                checkReady();
+              };
+              results.appendChild(div);
+            });
+          }, 500);
+        });
+      }
+
+      window.clearSelection = function (inputId, selectedId, stateKey) {
+        state[stateKey] = null;
+        getEl(selectedId).classList.add("hidden");
+        const input = getEl(inputId);
+        input.classList.remove("hidden");
+        input.value = "";
+        input.focus();
+        checkReady();
+      };
+
+      function checkReady() {
+        const btn = getEl("startGameBtn");
+        if (state.startAnime && state.targetAnime) {
+          btn.disabled = false;
+          btn.classList.remove("opacity-50", "cursor-not-allowed");
+        } else {
+          btn.disabled = true;
+          btn.classList.add("opacity-50", "cursor-not-allowed");
+        }
+      }
+
+      // Init
+      setupAutocomplete(
+        "startInput",
+        "startSuggestions",
+        "startSelected",
+        "startAnime",
+      );
+      setupAutocomplete(
+        "endInput",
+        "endSuggestions",
+        "endSelected",
+        "targetAnime",
+      );
+      getEl("startGameBtn").onclick = initGame;
+      getEl("startRandomBtn").onclick = initGame;
+    </script>
+  </body>
+</html>

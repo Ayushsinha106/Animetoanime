@@ -1707,7 +1707,7 @@
               const btn = document.createElement("button");
               btn.className =
                 "w-full text-left p-3 bg-slate-800 hover:bg-slate-700 rounded-lg border border-slate-700 flex justify-between items-center transition-all group";
-              btn.innerHTML = `<div><div class="text-xs text-blue-400 font-bold">${c.date}</div><div class="text-sm font-semibold text-white mt-1">Start ID: ${c.startId} <i class="fa-solid fa-arrow-right mx-1 text-slate-500"></i> ID: ${c.endId}</div></div><div class="text-xs text-slate-500 group-hover:text-white"><i class="fa-solid fa-play"></i> Play</div>`;
+              btn.innerHTML = `<div><div class="text-xs text-blue-400 font-bold">${c.date}</div><div class="text-sm font-semibold text-white mt-1">Start : ${c.startName} <i class="fa-solid fa-arrow-right mx-1 text-slate-500"></i> ${c.endName}</div></div><div class="text-xs text-slate-500 group-hover:text-white"><i class="fa-solid fa-play"></i> Play</div>`;
               btn.onclick = async () => {
                 const setupDiv = getEl("archiveSetup");
                 setupDiv.innerHTML =

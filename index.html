@@ -183,6 +183,7 @@
           >
             <i class="fa-solid fa-calendar-day"></i> Daily
             <span
+              id="dailyNotificationDot"
               class="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full animate-pulse"
             ></span>
           </button>
@@ -985,38 +986,35 @@
     <!-- JS Logic -->
     <script>
       // --- Inline Daily Challenges (Replaces JSON fetch) ---
-      const DAILY_CHALLENGES = [
-        {
-          date: "09 Feb 2026",
-          startId: 52299,
-          endId: 49387,
-          shortestPath: 1,
-          solution: [
-            { type: "person", name: "Taito Ban", info: "Sung Jin-woo" },
-            {
-              type: "anime",
-              name: "Vinland Saga Season 2",
-              info: "Snake",
-            },
-          ],
-        },
-        {
-          date: "10 Feb 2026",
-          startId: 20,
-          endId: 16498,
-          shortestPath: 2,
-          solution: [
-            {
-              type: "person",
-              name: "Junko Takeuchi",
-              info: "Naruto Uzumaki",
-            },
-            { type: "anime", name: "Digimon Adventure", info: "" },
-            { type: "person", name: "Hiroaki Hirata", info: "Narrator" },
-            { type: "anime", name: "Attack on Titan", info: "" },
-          ],
-        },
-      ];
+      async function loadDailyChallenges() {
+        if (state.allChallenges.length > 0) return state.allChallenges;
+
+        try {
+          const res = await fetch("daily_challenges.json?cb=" + Date.now());
+          if (!res.ok) throw new Error("Failed to fetch daily challenges");
+
+          state.allChallenges = await res.json();
+          return state.allChallenges;
+        } catch (err) {
+          console.error("Daily JSON error:", err);
+          return [];
+        }
+      }
+
+      function updateDailyDot() {
+        const dot = getEl("dailyNotificationDot");
+        if (!dot) return;
+
+        const options = { day: "2-digit", month: "short", year: "numeric" };
+        const todayStr = new Date()
+          .toLocaleDateString("en-GB", options)
+          .replace(/ /g, " ");
+
+        const saved = localStorage.getItem("anime_daily_" + todayStr);
+
+        if (saved) dot.classList.add("hidden");
+        else dot.classList.remove("hidden");
+      }
 
       // --- Constants & State ---
       const JIKAN_BASE = "https://api.jikan.moe/v4";
@@ -1492,7 +1490,8 @@
         getEl("dailyDate").innerText = `Challenge for ${todayStr}`;
 
         // Use inlined constant instead of fetch
-        const challenge = DAILY_CHALLENGES.find((c) => c.date === todayStr);
+        const challenges = await loadDailyChallenges();
+        const challenge = challenges.find((c) => c.date === todayStr);
 
         if (challenge) {
           state.currentDailySolution = challenge.solution;
@@ -1689,7 +1688,7 @@
         list.innerHTML = '<div class="loader mx-auto"></div>';
 
         try {
-          const challenges = DAILY_CHALLENGES; // Use inlined data
+          const challenges = await loadDailyChallenges();
           const now = new Date();
           now.setHours(0, 0, 0, 0);
 
@@ -1764,7 +1763,7 @@
         } else {
           btn.disabled = false;
           btn.classList.remove("opacity-50", "cursor-not-allowed");
-          txt.innerText = "Show Hint (Top 5)";
+          txt.innerText = "Show Hint (Top 10)";
         }
       };
 
@@ -1790,7 +1789,10 @@
           return 0;
         });
 
-        let limit = state.hintLevel >= 1 ? 5 : 3;
+        let limit = 3;
+        if (state.hintLevel === 1) limit = 5;
+        if (state.hintLevel >= 2) limit = 10;
+
         const hintList = getEl("hintList");
         hintList.innerHTML = "";
 
@@ -1809,10 +1811,11 @@
         getEl("hintModal").classList.remove("hidden");
         btn.innerHTML =
           '<i class="fa-solid fa-lightbulb"></i> <span id="hintBtnText"></span>';
-        if (state.hintLevel === 0) {
-          state.hintLevel = 1;
+        if (state.hintLevel < 2) {
+          state.hintLevel++;
           state.lastHintMove = Math.floor((state.history.length - 1) / 2);
         }
+
         window.checkHintAvailability();
       };
       window.closeHint = function () {
@@ -2058,6 +2061,7 @@
       );
       getEl("startGameBtn").onclick = initGame;
       getEl("startRandomBtn").onclick = initGame;
+      updateDailyDot();
     </script>
   </body>
 </html>

@@ -1,0 +1,66 @@
+[
+    {
+        "date": "08 Feb 2026",
+        "startId": 10165,
+        "endId": 34599,
+        "shortestPath": 1,
+        "solution": [
+            {
+                "type": "person",
+                "name": "Tamura Mutsumi",
+                "info": "Boy"
+            },
+            {
+                "type": "anime",
+                "name": "Made in Abyss",
+                "info": "Nat"
+            }
+        ]
+    },
+    {
+        "date": "09 Feb 2026",
+        "startId": 52299,
+        "endId": 49387,
+        "shortestPath": 1,
+        "solution": [
+            {
+                "type": "person",
+                "name": "Taito Ban",
+                "info": "Sung Jin-woo"
+            },
+            {
+                "type": "anime",
+                "name": "Vinland Saga Season 2",
+                "info": "Snake"
+            }
+        ]
+    },
+    {
+        "date": "10 Feb 2026",
+        "startId": 20,
+        "endId": 16498,
+        "shortestPath": 2,
+        "solution": [
+            {
+                "type": "person",
+                "name": "Junko Takeuchi",
+                "info": "Naruto Uzumaki"
+            },
+            {
+                "type": "anime",
+                "name": "Digimon Adventure",
+                "info": ""
+            },
+            {
+                "type": "person",
+                "name": "Hiroaki Hirata",
+                "info": "Narrator"
+            },
+            {
+                "type": "anime",
+                "name": "Attack on Titan",
+                "info": ""
+            }
+        ]
+    }
+]

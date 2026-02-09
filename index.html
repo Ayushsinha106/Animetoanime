@@ -19,7 +19,7 @@
           (window.vaq = window.vaq || []).push(arguments);
         };
     </script>
-    <script defer src="/_vercel/insights/script.js"></script>
+    <script src="/_vercel/insights/script.js"></script>
     <script>
       tailwind.config = {
         darkMode: "class",
@@ -118,7 +118,7 @@
       >
         <div
           class="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity"
-          onclick="resetGame()"
+          onclick="window.goHome()"
         >
           <div
             class="w-8 h-8 rounded bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg"
@@ -132,8 +132,14 @@
 
         <div
           id="gameHeaderStats"
-          class="hidden flex items-center gap-4 text-xs md:text-sm font-mono"
+          class="hidden flex items-center gap-3 text-xs md:text-sm font-mono"
         >
+          <div class="bg-slate-800 px-3 py-1 rounded border border-slate-700">
+            <i class="fa-solid fa-clock mr-1 text-slate-400"></i>
+            <span id="gameTimerDisplay" class="text-white font-bold"
+              >00:00</span
+            >
+          </div>
           <div class="bg-slate-800 px-3 py-1 rounded border border-slate-700">
             <span class="text-slate-400">Moves:</span>
             <span id="moveCountHeader" class="text-blue-400 font-bold">0</span>
@@ -186,6 +192,13 @@
             class="tab-inactive flex-1 md:flex-none px-4 py-2 rounded-lg font-semibold border transition-all shadow-lg flex items-center justify-center gap-2 text-xs md:text-sm"
           >
             <i class="fa-solid fa-box-archive"></i> Archive
+          </button>
+          <button
+            onclick="switchMode('records')"
+            id="tabRecords"
+            class="tab-inactive flex-1 md:flex-none px-4 py-2 rounded-lg font-semibold border transition-all shadow-lg flex items-center justify-center gap-2 text-xs md:text-sm"
+          >
+            <i class="fa-solid fa-clock-rotate-left"></i> Records
           </button>
         </div>
 
@@ -547,6 +560,30 @@
               No past challenges available yet.
             </div>
           </div>
+
+          <!-- RECORDS SETUP -->
+          <div id="recordsSetup" class="hidden space-y-4">
+            <div class="text-center border-b border-slate-800 pb-3 mb-2">
+              <h3 class="text-xl font-bold text-white">Your Records</h3>
+              <p class="text-sm text-slate-400">History of your victories.</p>
+            </div>
+            <div
+              id="recordsList"
+              class="space-y-3 max-h-[400px] overflow-y-auto pr-2"
+            ></div>
+            <div
+              id="recordsEmpty"
+              class="hidden py-10 text-center text-slate-500"
+            >
+              No records found. Start playing!
+            </div>
+            <button
+              onclick="clearRecords()"
+              class="text-xs text-red-500 hover:underline w-full text-center mt-4"
+            >
+              Clear History
+            </button>
+          </div>
         </div>
       </div>
 
@@ -583,7 +620,7 @@
           </div>
           <button
             id="hintBtn"
-            onclick="showHint()"
+            onclick="window.showHint()"
             class="w-full py-2 px-3 bg-indigo-900/50 hover:bg-indigo-900 border border-indigo-700 text-indigo-300 rounded-lg text-xs md:text-sm font-semibold transition-all flex items-center justify-center gap-2"
           >
             <i class="fa-solid fa-lightbulb"></i>
@@ -610,7 +647,7 @@
             ></div>
           </div>
           <button
-            onclick="goHome()"
+            onclick="window.goHome()"
             class="hidden md:block py-2 px-4 bg-slate-800 hover:bg-red-900/30 text-slate-400 hover:text-red-400 rounded-lg text-sm border border-slate-700 transition-colors"
           >
             <i class="fa-solid fa-arrow-left mr-2"></i> Quit / Home
@@ -663,7 +700,7 @@
         </div>
 
         <button
-          onclick="goHome()"
+          onclick="window.goHome()"
           class="md:hidden py-3 px-4 bg-slate-800 text-red-400 rounded-lg text-sm border border-slate-700 font-bold"
         >
           Quit / Home
@@ -672,7 +709,7 @@
 
       <!-- Help/Hint Modals -->
       <button
-        onclick="openHelp()"
+        onclick="window.openHelp()"
         class="fixed bottom-4 right-4 md:bottom-6 md:right-6 w-10 h-10 md:w-12 md:h-12 bg-blue-600 hover:bg-blue-500 rounded-full shadow-lg flex items-center justify-center text-white transition-transform hover:scale-110 z-40"
         title="How to Play"
       >
@@ -688,7 +725,7 @@
           <div class="flex justify-between items-center mb-4">
             <h3 class="text-xl font-bold text-white">How to Play</h3>
             <button
-              onclick="closeHelp()"
+              onclick="window.closeHelp()"
               class="text-slate-400 hover:text-white"
             >
               <i class="fa-solid fa-times"></i>
@@ -721,7 +758,7 @@
             </div>
           </div>
           <button
-            onclick="closeHelp()"
+            onclick="window.closeHelp()"
             class="mt-6 w-full py-3 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-lg"
           >
             Got it!
@@ -742,7 +779,7 @@
               <i class="fa-solid fa-star"></i> Target Anime Cast
             </h3>
             <button
-              onclick="closeHint()"
+              onclick="window.closeHint()"
               class="text-slate-400 hover:text-white"
             >
               <i class="fa-solid fa-times"></i>
@@ -753,7 +790,7 @@
             class="grid grid-cols-1 gap-3 max-h-[60vh] overflow-y-auto"
           ></div>
           <button
-            onclick="closeHint()"
+            onclick="window.closeHint()"
             class="mt-4 w-full py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-sm"
           >
             Close
@@ -770,7 +807,7 @@
           class="max-w-sm w-full bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-2xl relative text-center"
         >
           <button
-            onclick="closeContact()"
+            onclick="window.closeContact()"
             class="absolute top-4 right-4 text-slate-400 hover:text-white"
           >
             <i class="fa-solid fa-times"></i>
@@ -780,7 +817,7 @@
           >
             <i class="fa-solid fa-envelope"></i>
           </div>
-          <h3 class="text-xl font-bold text-white mb-2">Contact Me</h3>
+          <h3 class="text-xl font-bold text-white mb-2">Contact Developer</h3>
           <p class="text-slate-400 text-sm mb-6">
             Feel free to reach out for feedback or bugs!
           </p>
@@ -845,14 +882,30 @@
           <p class="text-slate-400 mb-6">
             You connected the anime successfully.
           </p>
-          <div
-            class="bg-slate-950 rounded-lg p-4 mb-8 border border-slate-800 inline-block"
-          >
-            <div class="text-sm text-slate-500 uppercase tracking-wider mb-1">
-              Total Moves
+
+          <div class="flex justify-center gap-6 mb-8">
+            <div
+              class="bg-slate-950 rounded-lg p-4 border border-slate-800 w-32"
+            >
+              <div class="text-xs text-slate-500 uppercase tracking-wider mb-1">
+                Moves
+              </div>
+              <div id="finalMoveCount" class="text-3xl font-bold text-blue-400">
+                0
+              </div>
             </div>
-            <div id="finalMoveCount" class="text-4xl font-bold text-blue-400">
-              0
+            <div
+              class="bg-slate-900 rounded-lg p-4 border border-slate-800 w-32"
+            >
+              <div class="text-xs text-slate-500 uppercase tracking-wider mb-1">
+                Time
+              </div>
+              <div
+                id="finalTimeCount"
+                class="text-3xl font-bold text-green-400"
+              >
+                00:00
+              </div>
             </div>
           </div>
 
@@ -894,7 +947,7 @@
 
           <div class="flex gap-3 justify-center">
             <button
-              onclick="goHome()"
+              onclick="window.goHome()"
               class="px-8 py-3 bg-slate-700 hover:bg-slate-600 text-white font-bold rounded-lg transition-colors shadow-lg"
             >
               <i class="fa-solid fa-house mr-2"></i> Home
@@ -902,7 +955,7 @@
             <!-- Play Again only shows for non-daily modes here -->
             <button
               id="winPlayAgainBtn"
-              onclick="resetGame()"
+              onclick="window.resetGame()"
               class="px-8 py-3 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-lg transition-colors shadow-lg"
             >
               Play Again
@@ -918,7 +971,7 @@
       <p>
         Made by Ayush Sinha
         <button
-          onclick="openContact()"
+          onclick="window.openContact()"
           class="text-blue-500 hover:text-blue-400 ml-2 font-semibold"
         >
           Contact Me
@@ -931,7 +984,67 @@
 
     <!-- JS Logic -->
     <script>
-      // --- State ---
+      // --- Inline Daily Challenges (Replaces JSON fetch) ---
+      const DAILY_CHALLENGES = [
+        {
+          date: "09 Feb 2026",
+          startId: 52299,
+          endId: 49387,
+          shortestPath: 1,
+          solution: [
+            { type: "person", name: "Taito Ban", info: "Sung Jin-woo" },
+            {
+              type: "anime",
+              name: "Vinland Saga Season 2",
+              info: "Snake",
+            },
+          ],
+        },
+        {
+          date: "10 Feb 2026",
+          startId: 20,
+          endId: 16498,
+          shortestPath: 2,
+          solution: [
+            {
+              type: "person",
+              name: "Junko Takeuchi",
+              info: "Naruto Uzumaki",
+            },
+            { type: "anime", name: "Digimon Adventure", info: "" },
+            { type: "person", name: "Hiroaki Hirata", info: "Narrator" },
+            { type: "anime", name: "Attack on Titan", info: "" },
+          ],
+        },
+      ];
+
+      // --- Constants & State ---
+      const JIKAN_BASE = "https://api.jikan.moe/v4";
+      const getEl = (id) => document.getElementById(id);
+      const delay = (ms) => new Promise((res) => setTimeout(res, ms));
+
+      let lastRequestTime = 0;
+      async function fetchJikan(endpoint) {
+        const now = Date.now();
+        const timeSinceLast = now - lastRequestTime;
+        if (timeSinceLast < 350) await delay(350 - timeSinceLast);
+        lastRequestTime = Date.now();
+        try {
+          const res = await fetch(`${JIKAN_BASE}${endpoint}`);
+          if (!res.ok) {
+            if (res.status === 429) {
+              await delay(1000);
+              return fetchJikan(endpoint);
+            }
+            throw new Error(`API Error ${res.status}`);
+          }
+          return await res.json();
+        } catch (err) {
+          console.error(err);
+          return null;
+        }
+      }
+
       const state = {
         step: 0,
         startAnime: null,
@@ -947,695 +1060,11 @@
         dailyTarget: null,
         currentDailySolution: null,
         allChallenges: [],
+        startTime: null,
+        timerInterval: null,
       };
 
-      const JIKAN_BASE = "https://api.jikan.moe/v4";
-      const getEl = (id) => document.getElementById(id);
-      const delay = (ms) => new Promise((res) => setTimeout(res, ms));
-
-      // --- Helpers ---
-      window.openHelp = function () {
-        getEl("helpModal").classList.remove("hidden");
-      };
-      window.closeHelp = function () {
-        getEl("helpModal").classList.add("hidden");
-      };
-      window.openContact = function () {
-        getEl("contactModal").classList.remove("hidden");
-      };
-      window.closeContact = function () {
-        getEl("contactModal").classList.add("hidden");
-      };
-
-      window.setLanguage = function (lang) {
-        state.language = lang;
-        getEl("langJP").className =
-          lang === "Japanese"
-            ? "px-4 py-1.5 rounded text-xs font-bold bg-blue-600 text-white transition-all"
-            : "px-4 py-1.5 rounded text-xs font-bold text-slate-400 hover:text-white transition-all";
-        getEl("langEN").className =
-          lang === "English"
-            ? "px-4 py-1.5 rounded text-xs font-bold bg-blue-600 text-white transition-all"
-            : "px-4 py-1.5 rounded text-xs font-bold text-slate-400 hover:text-white transition-all";
-      };
-      function toggleHistoryMobile() {
-        const log = getEl("pathLog"),
-          icon = getEl("historyChevron");
-        log.classList.toggle("hidden");
-        log.classList.toggle("flex");
-        icon.classList.toggle("fa-chevron-down");
-        icon.classList.toggle("fa-chevron-up");
-      }
-
-      // --- Mode Switching ---
-      window.switchMode = function (mode) {
-        state.mode = mode;
-        ["custom", "random", "daily", "archive"].forEach((m) => {
-          const btn = getEl(`tab${m.charAt(0).toUpperCase() + m.slice(1)}`);
-          const view = getEl(`${m}Setup`);
-          if (m === mode) {
-            btn.classList.replace("tab-inactive", "tab-active");
-            view.classList.remove("hidden");
-          } else {
-            btn.classList.replace("tab-active", "tab-inactive");
-            view.classList.add("hidden");
-          }
-        });
-
-        const langSelector = getEl("langSelector");
-        if (mode === "daily" || mode === "archive") {
-          langSelector.classList.add("hidden");
-          state.language = "Japanese"; // Enforce JP
-        } else {
-          langSelector.classList.remove("hidden");
-        }
-
-        if (mode === "daily") initDailySetup();
-        if (mode === "archive") initArchiveSetup();
-      };
-
-      // --- Core Functions ---
-      async function fetchAnimeById(id) {
-        try {
-          const res = await fetch(`${JIKAN_BASE}/anime/${id}`);
-          if (!res.ok) throw new Error("API Error");
-          const json = await res.json();
-          return json.data;
-        } catch (e) {
-          return null;
-        }
-      }
-
-      async function searchAnime(query) {
-        const data = await fetchJikan(
-          `/anime?q=${encodeURIComponent(query)}&limit=5&sfw=true&order_by=popularity`,
-        );
-        return data ? data.data : [];
-      }
-
-      async function getAnimeStaff(animeId) {
-        const data = await fetchJikan(`/anime/${animeId}/characters`);
-        if (!data) return [];
-        return data.data.flatMap((char) => {
-          // If Daily/Archive, force JP check, otherwise use state.language
-          const targetLang =
-            state.mode === "daily" ||
-            state.mode === "archive" ||
-            state.mode === "archive_play"
-              ? "Japanese"
-              : state.language;
-          const va = char.voice_actors.find((v) => v.language === targetLang);
-          if (!va) return [];
-          return {
-            id: va.person.mal_id,
-            name: va.person.name,
-            image: va.person.images.jpg.image_url,
-            role: char.role,
-            characterName: char.character.name,
-          };
-        });
-      }
-
-      async function getPersonRoles(personId) {
-        let allRoles = [];
-        let page = 1;
-        let hasNext = true;
-        while (hasNext && page <= 3) {
-          if (page > 1) setLoading(true, `Fetching page ${page}...`);
-          const data = await fetchJikan(
-            `/people/${personId}/voices?page=${page}`,
-          );
-          if (!data || !data.data) break;
-          const roles = data.data.map((item) => ({
-            id: item.anime.mal_id,
-            title: item.anime.title,
-            image: item.anime.images.jpg.image_url,
-            role: item.role,
-            character: item.character.name,
-          }));
-          allRoles = [...allRoles, ...roles];
-          hasNext = data.pagination?.has_next_page || false;
-          page++;
-        }
-        return allRoles;
-      }
-
-      function setLoading(loading, text = "Fetching Data...") {
-        const overlay = getEl("loadingOverlay");
-        if (loading) {
-          getEl("loadingText").innerText = text;
-          overlay.classList.remove("hidden");
-        } else overlay.classList.add("hidden");
-      }
-
-      // --- Daily Logic ---
-      async function fetchAllChallenges() {
-        if (state.allChallenges.length > 0) return state.allChallenges;
-        try {
-          const res = await fetch("daily_challenges.json");
-          if (!res.ok) throw new Error("JSON load failed");
-          state.allChallenges = await res.json();
-          return state.allChallenges;
-        } catch (e) {
-          console.error(e);
-          return [];
-        }
-      }
-
-      function parseDate(dateStr) {
-        return new Date(dateStr);
-      }
-
-      async function initDailySetup() {
-        getEl("dailyStartView").classList.add("hidden");
-        getEl("dailyCompletedView").classList.add("hidden");
-        getEl("dailyError").classList.add("hidden");
-        getEl("dailyLoading").classList.remove("hidden");
-
-        const options = { day: "2-digit", month: "short", year: "numeric" };
-        const todayStr = new Date()
-          .toLocaleDateString("en-GB", options)
-          .replace(/ /g, " ");
-        getEl("dailyDate").innerText = `Challenge for ${todayStr}`;
-
-        const challenges = await fetchAllChallenges();
-        const challenge = challenges.find((c) => c.date === todayStr);
-
-        if (challenge) {
-          state.currentDailySolution = challenge.solution;
-          const savedScore = localStorage.getItem("anime_daily_" + todayStr);
-          if (savedScore) {
-            renderDailyResults(JSON.parse(savedScore));
-            getEl("dailyLoading").classList.add("hidden");
-            return;
-          }
-          try {
-            if (
-              state.dailyStart &&
-              state.dailyStart.mal_id === challenge.startId
-            ) {
-              state.startAnime = state.dailyStart;
-              state.targetAnime = state.dailyTarget;
-              renderDailyStart(state.dailyStart, state.dailyTarget, challenge);
-            } else {
-              const startData = await fetchAnimeById(challenge.startId);
-              await delay(400);
-              const endData = await fetchAnimeById(challenge.endId);
-              if (startData && endData) {
-                state.dailyStart = startData;
-                state.dailyTarget = endData;
-                state.startAnime = startData;
-                state.targetAnime = endData;
-                renderDailyStart(startData, endData, challenge);
-              } else throw new Error("Data fetch failed");
-            }
-          } catch (e) {
-            console.error(e);
-            showDailyError(todayStr);
-          }
-        } else {
-          showDailyError(todayStr);
-        }
-      }
-
-      function renderDailyStart(start, end, challenge) {
-        getEl("dailyStartImg").src = start.images.jpg.image_url;
-        getEl("dailyStartName").innerText = start.title;
-        getEl("dailyEndImg").src = end.images.jpg.image_url;
-        getEl("dailyEndName").innerText = end.title;
-        getEl("dailyPathCount").innerText = challenge.shortestPath || "?";
-        getEl("dailyLoading").classList.add("hidden");
-        getEl("dailyStartView").classList.remove("hidden");
-        getEl("startDailyBtn").onclick = () => {
-          state.mode = "daily";
-          state.language = "Japanese"; // Enforce JP
-          state.startAnime = state.dailyStart;
-          state.targetAnime = state.dailyTarget;
-          initGame();
-        };
-      }
-
-      function renderDailyResults(scoreData) {
-        getEl("dailyCompletedView").classList.remove("hidden");
-        getEl("savedMoves").innerText = scoreData.moves;
-        const userContainer = getEl("savedUserPath");
-        userContainer.innerHTML = "";
-        scoreData.path.slice(1).forEach((step) => {
-          const div = document.createElement("div");
-          div.className = "flex items-center gap-2";
-          div.innerHTML =
-            step.type === "person"
-              ? `<i class="fa-solid fa-microphone text-purple-400 w-4"></i> <span class="text-slate-300">${step.data.name}</span>`
-              : `<i class="fa-solid fa-film text-blue-400 w-4"></i> <span class="text-white font-bold">${step.data.title}</span>`;
-          userContainer.appendChild(div);
-        });
-        const optContainer = getEl("savedOptimalPath");
-        optContainer.innerHTML = "";
-        if (state.currentDailySolution) {
-          state.currentDailySolution.forEach((step) => {
-            const div = document.createElement("div");
-            div.className = "flex items-center gap-2";
-            div.innerHTML =
-              step.type === "person"
-                ? `<i class="fa-solid fa-microphone text-purple-400 w-4"></i> <span class="text-slate-300">${step.name}</span>`
-                : `<i class="fa-solid fa-film text-blue-400 w-4"></i> <span class="text-white font-bold">${step.name}</span>`;
-            optContainer.appendChild(div);
-          });
-        }
-      }
-
-      window.confirmReplayDaily = function () {
-        if (
-          confirm(
-            "Playing again will overwrite your current score for today. Are you sure?",
-          )
-        ) {
-          const options = { day: "2-digit", month: "short", year: "numeric" };
-          const todayStr = new Date()
-            .toLocaleDateString("en-GB", options)
-            .replace(/ /g, " ");
-          localStorage.removeItem("anime_daily_" + todayStr);
-          initDailySetup();
-        }
-      };
-
-      function showDailyError(date) {
-        getEl("dailyLoading").classList.add("hidden");
-        getEl("dailyError").classList.remove("hidden");
-        getEl("dailyErrorDate").innerText = date;
-      }
-
-      // --- Archive Logic ---
-      async function initArchiveSetup() {
-        const list = getEl("archiveList");
-        if (!list) return;
-        list.innerHTML = '<div class="loader mx-auto"></div>';
-
-        try {
-          const challenges = await fetchAllChallenges();
-          const now = new Date();
-          // Reset time to compare dates only
-          now.setHours(0, 0, 0, 0);
-
-          list.innerHTML = "";
-          // Filter: Date must be BEFORE today
-          const pastChallenges = challenges.filter((c) => {
-            const cDate = new Date(c.date);
-            return cDate < now;
-          });
-
-          if (pastChallenges.length === 0) {
-            getEl("archiveEmpty").classList.remove("hidden");
-          } else {
-            getEl("archiveEmpty").classList.add("hidden");
-            pastChallenges.forEach((c) => {
-              const btn = document.createElement("button");
-              btn.className =
-                "w-full text-left p-3 bg-slate-800 hover:bg-slate-700 rounded-lg border border-slate-700 flex justify-between items-center transition-all group";
-              btn.innerHTML = `<div><div class="text-xs text-blue-400 font-bold">${c.date}</div><div class="text-sm font-semibold text-white mt-1">Start ID: ${c.startId} <i class="fa-solid fa-arrow-right mx-1 text-slate-500"></i> ID: ${c.endId}</div></div><div class="text-xs text-slate-500 group-hover:text-white"><i class="fa-solid fa-play"></i> Play</div>`;
-              btn.onclick = async () => {
-                const setupDiv = getEl("archiveSetup");
-                setupDiv.innerHTML =
-                  '<div class="loader mx-auto my-10"></div><p class="text-center text-slate-500">Loading Archive...</p>';
-                const start = await fetchAnimeById(c.startId);
-                await delay(400);
-                const end = await fetchAnimeById(c.endId);
-                if (start && end) {
-                  state.startAnime = start;
-                  state.targetAnime = end;
-                  state.currentDailySolution = c.solution;
-                  state.mode = "archive_play";
-                  state.language = "Japanese"; // Enforce JP
-                  initGame();
-                } else {
-                  alert("Failed to load archive data.");
-                  location.reload();
-                }
-              };
-              list.appendChild(btn);
-            });
-          }
-        } catch (e) {
-          console.error(e);
-          list.innerHTML =
-            '<div class="text-red-400 text-center text-sm">Failed to load archive.</div>';
-        }
-      }
-
-      // --- Hint Logic ---
-      function checkHintAvailability() {
-        const moves = Math.floor((state.history.length - 1) / 2);
-        const btn = getEl("hintBtn");
-        const txt = getEl("hintBtnText");
-        if (!btn || !txt) return;
-
-        if (state.hintLevel === 0) {
-          btn.disabled = false;
-          btn.classList.remove("opacity-50", "cursor-not-allowed");
-          txt.innerText = "Show Hint (Top 3)";
-        } else if (state.hintLevel === 1) {
-          const diff = moves - state.lastHintMove;
-          const required = 2;
-          if (diff >= required) {
-            btn.disabled = false;
-            btn.classList.remove("opacity-50", "cursor-not-allowed");
-            txt.innerText = "Show Hint (Top 5)";
-          } else {
-            btn.disabled = true;
-            btn.classList.add("opacity-50", "cursor-not-allowed");
-            txt.innerText = `Wait ${required - diff} moves`;
-          }
-        } else {
-          btn.disabled = false;
-          btn.classList.remove("opacity-50", "cursor-not-allowed");
-          txt.innerText = "Show Hint (Top 5)";
-        }
-      }
-
-      async function showHint() {
-        if (!state.targetAnime) return;
-        const btn = getEl("hintBtn");
-        btn.innerHTML =
-          '<div class="loader w-3 h-3 border-2 border-indigo-300"></div>';
-
-        const characters = await getAnimeStaff(state.targetAnime.mal_id);
-        const uniqueVAs = new Map();
-        characters.forEach((item) => {
-          if (!uniqueVAs.has(item.id)) uniqueVAs.set(item.id, item);
-          else if (
-            uniqueVAs.get(item.id).role !== "Main" &&
-            item.role === "Main"
-          )
-            uniqueVAs.set(item.id, item);
-        });
-        const sortedList = Array.from(uniqueVAs.values()).sort((a, b) => {
-          if (a.role === "Main" && b.role !== "Main") return -1;
-          if (a.role !== "Main" && b.role === "Main") return 1;
-          return 0;
-        });
-
-        let limit = state.hintLevel >= 1 ? 5 : 3;
-        const hintList = getEl("hintList");
-        hintList.innerHTML = "";
-
-        if (sortedList.length === 0) {
-          hintList.innerHTML = `<div class="text-slate-400 text-sm p-2">No ${state.language} voice actors found for target.</div>`;
-        } else {
-          sortedList.slice(0, limit).forEach((va) => {
-            const div = document.createElement("div");
-            div.className =
-              "flex items-center gap-3 bg-slate-800 p-2 rounded border border-slate-700";
-            div.innerHTML = `<img src="${va.image}" class="w-10 h-10 rounded-full object-cover"><div><div class="text-sm font-bold text-white">${va.name}</div><div class="text-xs text-slate-400">Voiced ${va.characterName}</div></div>`;
-            hintList.appendChild(div);
-          });
-        }
-
-        getEl("hintModal").classList.remove("hidden");
-        btn.innerHTML =
-          '<i class="fa-solid fa-lightbulb"></i> <span id="hintBtnText"></span>';
-        if (state.hintLevel === 0) {
-          state.hintLevel = 1;
-          state.lastHintMove = Math.floor((state.history.length - 1) / 2);
-        }
-        checkHintAvailability();
-      }
-      window.closeHint = function () {
-        getEl("hintModal").classList.add("hidden");
-      };
-
-      // --- Main Game Loop ---
-      function initGame() {
-        if (!state.startAnime || !state.targetAnime) return;
-        state.step = 1;
-        state.history = [];
-        state.currentType = "anime";
-        state.currentData = state.startAnime;
-        state.hintLevel = 0;
-        state.lastHintMove = 0;
-
-        getEl("setupScreen").classList.add("hidden");
-        getEl("gameScreen").classList.remove("hidden");
-        getEl("gameHeaderStats").classList.remove("hidden");
-        getEl("targetTitle").innerText = state.targetAnime.title;
-        getEl("targetThumb").src = state.targetAnime.images.jpg.image_url;
-        getEl("pathLog").classList.add("hidden");
-        getEl("historyChevron").className = "fa-solid fa-chevron-down";
-
-        checkHintAvailability();
-        updateGameState(state.startAnime, "anime");
-      }
-
-      async function updateGameState(newData, type) {
-        state.currentData = newData;
-        state.currentType = type;
-        state.history.push({ type, data: newData });
-        getEl("filterInput").value = "";
-
-        checkHintAvailability();
-        renderHistory();
-        renderHeader();
-        setLoading(true, "Loading...");
-        getEl("choiceList").innerHTML = "";
-
-        if (type === "anime" && newData.mal_id === state.targetAnime.mal_id) {
-          setLoading(false);
-          showWinScreen();
-          return;
-        }
-
-        if (type === "anime") {
-          const chars = await getAnimeStaff(newData.mal_id);
-          renderSeiyuuList(chars);
-        } else {
-          const roles = await getPersonRoles(newData.mal_id);
-          renderAnimeList(roles);
-        }
-        setLoading(false);
-      }
-
-      // --- Win Logic ---
-      function showWinScreen() {
-        getEl("winScreen").classList.remove("hidden");
-        const moves = Math.floor((state.history.length - 1) / 2);
-        getEl("finalMoveCount").innerText = moves;
-
-        const solutionContainer = getEl("dailySolutionContainer");
-        const userPathContainer = getEl("userFinalPath");
-        const solutionList = getEl("dailySolutionList");
-        const winPlayAgainBtn = getEl("winPlayAgainBtn");
-
-        if (state.mode === "daily") {
-          const options = { day: "2-digit", month: "short", year: "numeric" };
-          const todayStr = new Date()
-            .toLocaleDateString("en-GB", options)
-            .replace(/ /g, " ");
-          localStorage.setItem(
-            "anime_daily_" + todayStr,
-            JSON.stringify({ moves: moves, path: state.history }),
-          );
-          solutionContainer.classList.remove("hidden");
-          winPlayAgainBtn.classList.add("hidden");
-
-          userPathContainer.innerHTML = "";
-          state.history.slice(1).forEach((step) => {
-            const div = document.createElement("div");
-            div.className = "flex items-center gap-2";
-            div.innerHTML =
-              step.type === "person"
-                ? `<i class="fa-solid fa-microphone text-purple-400 w-4"></i> <span class="text-slate-300">${step.data.name}</span>`
-                : `<i class="fa-solid fa-film text-blue-400 w-4"></i> <span class="text-white font-bold">${step.data.title}</span>`;
-            userPathContainer.appendChild(div);
-          });
-
-          solutionList.innerHTML = "";
-          if (state.currentDailySolution) {
-            state.currentDailySolution.forEach((step) => {
-              const div = document.createElement("div");
-              div.className = "flex items-center gap-2";
-              div.innerHTML =
-                step.type === "person"
-                  ? `<i class="fa-solid fa-microphone text-purple-400 w-4"></i> <span class="text-slate-300">${step.name}</span><span class="text-slate-500 text-xs ml-1">(${step.info})</span>`
-                  : `<i class="fa-solid fa-film text-blue-400 w-4"></i> <span class="text-white font-bold">${step.name}</span>`;
-              solutionList.appendChild(div);
-            });
-          }
-        } else if (state.mode === "archive_play") {
-          solutionContainer.classList.remove("hidden");
-          winPlayAgainBtn.classList.remove("hidden");
-          userPathContainer.innerHTML = "";
-          state.history.slice(1).forEach((step) => {
-            const div = document.createElement("div");
-            div.className = "flex items-center gap-2";
-            div.innerHTML =
-              step.type === "person"
-                ? `<i class="fa-solid fa-microphone text-purple-400 w-4"></i> <span class="text-slate-300">${step.data.name}</span>`
-                : `<i class="fa-solid fa-film text-blue-400 w-4"></i> <span class="text-white font-bold">${step.data.title}</span>`;
-            userPathContainer.appendChild(div);
-          });
-          solutionList.innerHTML = "";
-          if (state.currentDailySolution) {
-            state.currentDailySolution.forEach((step) => {
-              const div = document.createElement("div");
-              div.className = "flex items-center gap-2";
-              div.innerHTML =
-                step.type === "person"
-                  ? `<i class="fa-solid fa-microphone text-purple-400 w-4"></i> <span class="text-slate-300">${step.name}</span>`
-                  : `<i class="fa-solid fa-film text-blue-400 w-4"></i> <span class="text-white font-bold">${step.name}</span>`;
-              solutionList.appendChild(div);
-            });
-          }
-        } else {
-          solutionContainer.classList.add("hidden");
-          winPlayAgainBtn.classList.remove("hidden");
-        }
-      }
-
-      // --- Navigation ---
-      window.goHome = function () {
-        getEl("winScreen").classList.add("hidden");
-        getEl("gameScreen").classList.add("hidden");
-        getEl("gameHeaderStats").classList.add("hidden");
-        getEl("setupScreen").classList.remove("hidden");
-        if (state.mode === "daily") initDailySetup();
-      };
-
-      window.resetGame = function () {
-        goHome();
-        if (state.mode === "custom" || state.mode === "random") {
-          getEl("startInput").value = "";
-          getEl("endInput").value = "";
-          getEl("startSelected").classList.add("hidden");
-          getEl("endSelected").classList.add("hidden");
-          getEl("startInput").classList.remove("hidden");
-          getEl("endInput").classList.remove("hidden");
-          checkReady();
-        }
-      };
-
-      // --- Other Helpers (Random, Autocomplete) ---
-      async function fetchRandomTopAnime() {
-        const diff = getEl("difficultySelect").value;
-        const maxPage =
-          diff === "easy"
-            ? 8
-            : diff === "normal"
-              ? 20
-              : diff === "hard"
-                ? 40
-                : 80;
-        const page = Math.floor(Math.random() * maxPage) + 1;
-        try {
-          const res = await fetch(
-            `${JIKAN_BASE}/top/anime?page=${page}&limit=25&cb=${Date.now()}`,
-          );
-          if (!res.ok) throw new Error("API Limit");
-          const data = await res.json();
-          if (!data.data?.length) return null;
-          return data.data[Math.floor(Math.random() * data.data.length)];
-        } catch (e) {
-          return null;
-        }
-      }
-
-      async function rollSingle(which) {
-        const btn = getEl(
-          `reroll${which.charAt(0).toUpperCase() + which.slice(1)}`,
-        );
-        const img = getEl(
-          `rand${which.charAt(0).toUpperCase() + which.slice(1)}Img`,
-        );
-        btn.disabled = true;
-        btn.innerHTML =
-          '<div class="loader w-3 h-3 border-2 border-white"></div>';
-        img.style.opacity = "0.5";
-        const anime = await fetchRandomTopAnime();
-        btn.disabled = false;
-        btn.innerHTML = '<i class="fa-solid fa-rotate"></i>';
-        img.style.opacity = "1";
-        if (anime) {
-          if (
-            which === "start" &&
-            state.targetAnime &&
-            anime.mal_id === state.targetAnime.mal_id
-          ) {
-            rollSingle(which);
-            return;
-          }
-          if (
-            which === "target" &&
-            state.startAnime &&
-            anime.mal_id === state.startAnime.mal_id
-          ) {
-            rollSingle(which);
-            return;
-          }
-          setRandomCard(which, anime);
-        }
-      }
-
-      async function rollRandomAnime() {
-        getEl("rollBtn").disabled = true;
-        getEl("rollBtn").innerHTML =
-          '<div class="loader w-4 h-4 border-2"></div> Rolling...';
-        getEl("startRandomBtn").classList.add("hidden");
-        state.startAnime = null;
-        state.targetAnime = null;
-        resetRandomCard("start");
-        resetRandomCard("target");
-        const start = await fetchRandomTopAnime();
-        await delay(400);
-        let target = await fetchRandomTopAnime();
-        while (target && start && target.mal_id === start.mal_id) {
-          await delay(400);
-          target = await fetchRandomTopAnime();
-        }
-        if (start && target) {
-          setRandomCard("start", start);
-          setRandomCard("target", target);
-          getEl("rollBtn").innerHTML =
-            '<i class="fa-solid fa-rotate mr-2"></i> Reroll Both';
-          getEl("startRandomBtn").classList.remove("hidden");
-          getEl("startRandomBtn").disabled = false;
-        } else {
-          getEl("rollBtn").innerHTML =
-            '<i class="fa-solid fa-dice mr-2"></i> Roll Anime';
-        }
-        getEl("rollBtn").disabled = false;
-      }
-
-      function setRandomCard(type, anime) {
-        if (type === "start") state.startAnime = anime;
-        else state.targetAnime = anime;
-        const Cap = type.charAt(0).toUpperCase() + type.slice(1);
-        getEl(`rand${Cap}Placeholder`).classList.add("hidden");
-        const img = getEl(`rand${Cap}Img`);
-        img.src = anime.images.jpg.image_url;
-        img.classList.remove("hidden");
-        const name = getEl(`rand${Cap}Name`);
-        name.innerText = anime.title;
-        name.classList.replace("text-slate-500", "text-white");
-        getEl(`reroll${Cap}`).classList.remove("hidden");
-        checkRandomReady();
-      }
-
-      function resetRandomCard(type) {
-        const Cap = type.charAt(0).toUpperCase() + type.slice(1);
-        getEl(`rand${Cap}Placeholder`).classList.remove("hidden");
-        getEl(`rand${Cap}Img`).classList.add("hidden");
-        const name = getEl(`rand${Cap}Name`);
-        name.innerText = "???";
-        name.classList.replace("text-white", "text-slate-500");
-        getEl(`reroll${Cap}`).classList.add("hidden");
-      }
-
-      function checkRandomReady() {
-        if (state.startAnime && state.targetAnime) {
-          getEl("startRandomBtn").disabled = false;
-          getEl("startRandomBtn").classList.remove("hidden");
-        }
-      }
-
-      // --- Rendering ---
+      // --- Rendering Functions (Defined First) ---
       function renderHeader() {
         const moves = Math.floor((state.history.length - 1) / 2);
         getEl("moveCountHeader").innerText = moves;
@@ -1755,40 +1184,9 @@
         });
       }
 
-      let lastRequestTime = 0;
-      async function fetchJikan(endpoint) {
-        const now = Date.now();
-        const timeSinceLast = now - lastRequestTime;
-        if (timeSinceLast < 350) await delay(350 - timeSinceLast);
-        lastRequestTime = Date.now();
-        try {
-          const res = await fetch(`${JIKAN_BASE}${endpoint}`);
-          if (!res.ok) {
-            if (res.status === 429) {
-              await delay(1000);
-              return fetchJikan(endpoint);
-            }
-            throw new Error(`API Error ${res.status}`);
-          }
-          return await res.json();
-        } catch (err) {
-          console.error(err);
-          return null;
-        }
-      }
+      // --- Top-Level Function Definitions ---
 
-      getEl("filterInput").addEventListener("input", (e) => {
-        const term = e.target.value.toLowerCase().trim();
-        Array.from(getEl("choiceList").getElementsByTagName("button")).forEach(
-          (btn) => {
-            btn.classList.toggle(
-              "hidden",
-              !btn.dataset.filterText.includes(term),
-            );
-          },
-        );
-      });
-
+      // Move setupAutocomplete definition BEFORE usage
       function setupAutocomplete(inputId, resultsId, selectedId, stateKey) {
         const input = getEl(inputId),
           results = getEl(resultsId),
@@ -1828,24 +1226,823 @@
           }, 500);
         });
       }
-      window.clearSelection = (iid, sid, key) => {
-        state[key] = null;
-        getEl(sid).classList.add("hidden");
-        getEl(iid).classList.remove("hidden");
-        getEl(iid).value = "";
-        getEl(iid).focus();
-        checkReady();
-      };
-      function checkReady() {
-        const btn = getEl("startGameBtn");
-        if (state.startAnime && state.targetAnime) {
-          btn.disabled = false;
-          btn.classList.remove("opacity-50", "cursor-not-allowed");
-        } else {
-          btn.disabled = true;
-          btn.classList.add("opacity-50", "cursor-not-allowed");
+
+      async function fetchAnimeById(id) {
+        try {
+          const res = await fetch(`${JIKAN_BASE}/anime/${id}`);
+          if (!res.ok) throw new Error("API Error");
+          const json = await res.json();
+          return json.data;
+        } catch (e) {
+          return null;
         }
       }
+
+      async function searchAnime(query) {
+        const data = await fetchJikan(
+          `/anime?q=${encodeURIComponent(query)}&limit=5&sfw=true&order_by=popularity`,
+        );
+        return data ? data.data : [];
+      }
+
+      async function getAnimeStaff(animeId) {
+        const data = await fetchJikan(`/anime/${animeId}/characters`);
+        if (!data) return [];
+        return data.data.flatMap((char) => {
+          const targetLang =
+            state.mode === "daily" ||
+            state.mode === "archive" ||
+            state.mode === "archive_play"
+              ? "Japanese"
+              : state.language;
+          const va = char.voice_actors.find((v) => v.language === targetLang);
+          if (!va) return [];
+          return {
+            id: va.person.mal_id,
+            name: va.person.name,
+            image: va.person.images.jpg.image_url,
+            role: char.role,
+            characterName: char.character.name,
+          };
+        });
+      }
+
+      async function getPersonRoles(personId) {
+        let allRoles = [];
+        let page = 1;
+        let hasNext = true;
+        while (hasNext && page <= 3) {
+          if (page > 1) setLoading(true, `Fetching page ${page}...`);
+          const data = await fetchJikan(
+            `/people/${personId}/voices?page=${page}`,
+          );
+          if (!data || !data.data) break;
+          const roles = data.data.map((item) => ({
+            id: item.anime.mal_id,
+            title: item.anime.title,
+            image: item.anime.images.jpg.image_url,
+            role: item.role,
+            character: item.character.name,
+          }));
+          allRoles = [...allRoles, ...roles];
+          hasNext = data.pagination?.has_next_page || false;
+          page++;
+        }
+        return allRoles;
+      }
+
+      function setLoading(loading, text = "Fetching Data...") {
+        const overlay = getEl("loadingOverlay");
+        if (loading) {
+          getEl("loadingText").innerText = text;
+          overlay.classList.remove("hidden");
+        } else overlay.classList.add("hidden");
+      }
+
+      function formatTime(ms) {
+        const totalSeconds = Math.floor(ms / 1000);
+        const minutes = Math.floor(totalSeconds / 60)
+          .toString()
+          .padStart(2, "0");
+        const seconds = (totalSeconds % 60).toString().padStart(2, "0");
+        return `${minutes}:${seconds}`;
+      }
+
+      function startTimer() {
+        state.startTime = Date.now();
+        state.timerInterval = setInterval(updateTimer, 1000);
+        updateTimer();
+      }
+
+      function updateTimer() {
+        const now = Date.now();
+        const diff = now - state.startTime;
+        getEl("gameTimerDisplay").innerText = formatTime(diff);
+      }
+
+      function stopTimer() {
+        if (state.timerInterval) {
+          clearInterval(state.timerInterval);
+          state.timerInterval = null;
+        }
+      }
+
+      // --- Helpers (Window Exposed) ---
+      window.openHelp = function () {
+        getEl("helpModal").classList.remove("hidden");
+      };
+      window.closeHelp = function () {
+        getEl("helpModal").classList.add("hidden");
+      };
+      window.openContact = function () {
+        getEl("contactModal").classList.remove("hidden");
+      };
+      window.closeContact = function () {
+        getEl("contactModal").classList.add("hidden");
+      };
+
+      window.setLanguage = function (lang) {
+        state.language = lang;
+        getEl("langJP").className =
+          lang === "Japanese"
+            ? "px-4 py-1.5 rounded text-xs font-bold bg-blue-600 text-white transition-all"
+            : "px-4 py-1.5 rounded text-xs font-bold text-slate-400 hover:text-white transition-all";
+        getEl("langEN").className =
+          lang === "English"
+            ? "px-4 py-1.5 rounded text-xs font-bold bg-blue-600 text-white transition-all"
+            : "px-4 py-1.5 rounded text-xs font-bold text-slate-400 hover:text-white transition-all";
+      };
+
+      window.toggleHistoryMobile = function () {
+        const log = getEl("pathLog"),
+          icon = getEl("historyChevron");
+        log.classList.toggle("hidden");
+        log.classList.toggle("flex");
+        icon.classList.toggle("fa-chevron-down");
+        icon.classList.toggle("fa-chevron-up");
+      };
+
+      window.rollSingle = async function (which) {
+        const btn = getEl(
+          `reroll${which.charAt(0).toUpperCase() + which.slice(1)}`,
+        );
+        const img = getEl(
+          `rand${which.charAt(0).toUpperCase() + which.slice(1)}Img`,
+        );
+        btn.disabled = true;
+        btn.innerHTML =
+          '<div class="loader w-3 h-3 border-2 border-white"></div>';
+        img.style.opacity = "0.5";
+        const anime = await fetchRandomTopAnime();
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-rotate"></i>';
+        img.style.opacity = "1";
+        if (anime) {
+          if (
+            which === "start" &&
+            state.targetAnime &&
+            anime.mal_id === state.targetAnime.mal_id
+          ) {
+            window.rollSingle(which);
+            return;
+          }
+          if (
+            which === "target" &&
+            state.startAnime &&
+            anime.mal_id === state.startAnime.mal_id
+          ) {
+            window.rollSingle(which);
+            return;
+          }
+          setRandomCard(which, anime);
+        }
+      };
+
+      window.rollRandomAnime = async function () {
+        getEl("rollBtn").disabled = true;
+        getEl("rollBtn").innerHTML =
+          '<div class="loader w-4 h-4 border-2"></div> Rolling...';
+        getEl("startRandomBtn").classList.add("hidden");
+        state.startAnime = null;
+        state.targetAnime = null;
+        resetRandomCard("start");
+        resetRandomCard("target");
+        const start = await fetchRandomTopAnime();
+        await delay(400);
+        let target = await fetchRandomTopAnime();
+        while (target && start && target.mal_id === start.mal_id) {
+          await delay(400);
+          target = await fetchRandomTopAnime();
+        }
+        if (start && target) {
+          setRandomCard("start", start);
+          setRandomCard("target", target);
+          getEl("rollBtn").innerHTML =
+            '<i class="fa-solid fa-rotate mr-2"></i> Reroll Both';
+          getEl("startRandomBtn").classList.remove("hidden");
+          getEl("startRandomBtn").disabled = false;
+        } else {
+          getEl("rollBtn").innerHTML =
+            '<i class="fa-solid fa-dice mr-2"></i> Roll Anime';
+        }
+        getEl("rollBtn").disabled = false;
+      };
+
+      window.switchMode = function (mode) {
+        state.mode = mode;
+        ["custom", "random", "daily", "archive", "records"].forEach((m) => {
+          const btn = getEl(`tab${m.charAt(0).toUpperCase() + m.slice(1)}`);
+          const view = getEl(m === "records" ? "recordsSetup" : `${m}Setup`);
+          if (!btn) return;
+          if (m === mode) {
+            btn.classList.replace("tab-inactive", "tab-active");
+            if (view) view.classList.remove("hidden");
+          } else {
+            btn.classList.replace("tab-active", "tab-inactive");
+            if (view) view.classList.add("hidden");
+          }
+        });
+
+        const langSelector = getEl("langSelector");
+        if (mode === "daily" || mode === "archive" || mode === "records") {
+          langSelector.classList.add("hidden");
+          state.language = "Japanese";
+        } else {
+          langSelector.classList.remove("hidden");
+        }
+
+        if (mode === "daily") initDailySetup();
+        if (mode === "archive") initArchiveSetup();
+        if (mode === "records") renderRecords();
+      };
+
+      window.goHome = function () {
+        stopTimer();
+        getEl("winScreen").classList.add("hidden");
+        getEl("gameScreen").classList.add("hidden");
+        getEl("gameHeaderStats").classList.add("hidden");
+        getEl("setupScreen").classList.remove("hidden");
+        if (state.mode === "daily") initDailySetup();
+      };
+
+      window.resetGame = function () {
+        window.goHome();
+        if (state.mode === "custom" || state.mode === "random") {
+          getEl("startInput").value = "";
+          getEl("endInput").value = "";
+          getEl("startSelected").classList.add("hidden");
+          getEl("endSelected").classList.add("hidden");
+          getEl("startInput").classList.remove("hidden");
+          getEl("endInput").classList.remove("hidden");
+          checkReady();
+        }
+      };
+
+      // --- Daily Logic (Using Inlined Data) ---
+      async function initDailySetup() {
+        getEl("dailyStartView").classList.add("hidden");
+        getEl("dailyCompletedView").classList.add("hidden");
+        getEl("dailyError").classList.add("hidden");
+        getEl("dailyLoading").classList.remove("hidden");
+
+        const options = { day: "2-digit", month: "short", year: "numeric" };
+        const todayStr = new Date()
+          .toLocaleDateString("en-GB", options)
+          .replace(/ /g, " ");
+        getEl("dailyDate").innerText = `Challenge for ${todayStr}`;
+
+        // Use inlined constant instead of fetch
+        const challenge = DAILY_CHALLENGES.find((c) => c.date === todayStr);
+
+        if (challenge) {
+          state.currentDailySolution = challenge.solution;
+          const savedScore = localStorage.getItem("anime_daily_" + todayStr);
+          if (savedScore) {
+            renderDailyResults(JSON.parse(savedScore));
+            getEl("dailyLoading").classList.add("hidden");
+            return;
+          }
+          try {
+            if (
+              state.dailyStart &&
+              state.dailyStart.mal_id === challenge.startId
+            ) {
+              state.startAnime = state.dailyStart;
+              state.targetAnime = state.dailyTarget;
+              renderDailyStart(state.dailyStart, state.dailyTarget, challenge);
+            } else {
+              const startData = await fetchAnimeById(challenge.startId);
+              await delay(400);
+              const endData = await fetchAnimeById(challenge.endId);
+              if (startData && endData) {
+                state.dailyStart = startData;
+                state.dailyTarget = endData;
+                state.startAnime = startData;
+                state.targetAnime = endData;
+                renderDailyStart(startData, endData, challenge);
+              } else throw new Error("Data fetch failed");
+            }
+          } catch (e) {
+            console.error(e);
+            showDailyError(todayStr);
+          }
+        } else {
+          showDailyError(todayStr);
+        }
+      }
+
+      function renderDailyStart(start, end, challenge) {
+        getEl("dailyStartImg").src = start.images.jpg.image_url;
+        getEl("dailyStartName").innerText = start.title;
+        getEl("dailyEndImg").src = end.images.jpg.image_url;
+        getEl("dailyEndName").innerText = end.title;
+        getEl("dailyPathCount").innerText = challenge.shortestPath || "?";
+        getEl("dailyLoading").classList.add("hidden");
+        getEl("dailyStartView").classList.remove("hidden");
+        getEl("startDailyBtn").onclick = () => {
+          state.mode = "daily";
+          state.language = "Japanese";
+          state.startAnime = state.dailyStart;
+          state.targetAnime = state.dailyTarget;
+          initGame();
+        };
+      }
+
+      function renderDailyResults(scoreData) {
+        getEl("dailyCompletedView").classList.remove("hidden");
+        getEl("savedMoves").innerText = scoreData.moves;
+        const userContainer = getEl("savedUserPath");
+        userContainer.innerHTML = "";
+        scoreData.path.slice(1).forEach((step) => {
+          const div = document.createElement("div");
+          div.className = "flex items-center gap-2";
+          div.innerHTML =
+            step.type === "person"
+              ? `<i class="fa-solid fa-microphone text-purple-400 w-4"></i> <span class="text-slate-300">${step.data.name}</span>`
+              : `<i class="fa-solid fa-film text-blue-400 w-4"></i> <span class="text-white font-bold">${step.data.title}</span>`;
+          userContainer.appendChild(div);
+        });
+        const optContainer = getEl("savedOptimalPath");
+        optContainer.innerHTML = "";
+        if (state.currentDailySolution) {
+          state.currentDailySolution.forEach((step) => {
+            const div = document.createElement("div");
+            div.className = "flex items-center gap-2";
+            div.innerHTML =
+              step.type === "person"
+                ? `<i class="fa-solid fa-microphone text-purple-400 w-4"></i> <span class="text-slate-300">${step.name}</span>`
+                : `<i class="fa-solid fa-film text-blue-400 w-4"></i> <span class="text-white font-bold">${step.name}</span>`;
+            optContainer.appendChild(div);
+          });
+        }
+      }
+
+      window.confirmReplayDaily = function () {
+        if (
+          confirm(
+            "Playing again will overwrite your current score for today. Are you sure?",
+          )
+        ) {
+          const options = { day: "2-digit", month: "short", year: "numeric" };
+          const todayStr = new Date()
+            .toLocaleDateString("en-GB", options)
+            .replace(/ /g, " ");
+          localStorage.removeItem("anime_daily_" + todayStr);
+          initDailySetup();
+        }
+      };
+
+      function showDailyError(date) {
+        getEl("dailyLoading").classList.add("hidden");
+        getEl("dailyError").classList.remove("hidden");
+        getEl("dailyErrorDate").innerText = date;
+      }
+
+      // --- Records Logic ---
+      function saveGameRecord(moves, timeTaken) {
+        const record = {
+          date: new Date().toLocaleDateString("en-GB"),
+          mode: state.mode === "archive_play" ? "archive" : state.mode,
+          start: state.startAnime.title,
+          target: state.targetAnime.title,
+          moves: moves,
+          time: timeTaken,
+          path: state.history, // Saving the full history
+        };
+        let history = JSON.parse(
+          localStorage.getItem("anime_connect_records") || "[]",
+        );
+        history.unshift(record);
+        if (history.length > 50) history.pop();
+        localStorage.setItem("anime_connect_records", JSON.stringify(history));
+      }
+
+      function renderRecords() {
+        const list = getEl("recordsList");
+        const empty = getEl("recordsEmpty");
+        const history = JSON.parse(
+          localStorage.getItem("anime_connect_records") || "[]",
+        );
+
+        if (history.length === 0) {
+          empty.classList.remove("hidden");
+          list.innerHTML = "";
+          return;
+        }
+
+        empty.classList.add("hidden");
+        list.innerHTML = "";
+        history.forEach((rec) => {
+          const div = document.createElement("div");
+          div.className =
+            "bg-slate-800 p-4 rounded-lg border border-slate-700 flex flex-col gap-3";
+
+          let pathHTML = "";
+          if (rec.path && rec.path.length > 0) {
+            pathHTML = `<div class="mt-2 pt-2 border-t border-slate-700 bg-slate-900/50 p-2 rounded">
+                <div class="text-[10px] font-bold text-slate-500 uppercase mb-2">Detailed Path</div>
+                <div class="space-y-1.5">`;
+            rec.path.forEach((step) => {
+              const icon =
+                step.type === "person"
+                  ? '<i class="fa-solid fa-microphone text-purple-400 w-4"></i>'
+                  : '<i class="fa-solid fa-film text-blue-400 w-4"></i>';
+              const textClass =
+                step.type === "person"
+                  ? "text-slate-300"
+                  : "text-white font-semibold";
+              const name =
+                step.type === "anime" ? step.data.title : step.data.name;
+              pathHTML += `<div class="flex items-center text-xs gap-2">${icon}<span class="${textClass} truncate">${name}</span></div>`;
+            });
+            pathHTML += `</div></div>`;
+          }
+
+          div.innerHTML = `
+                <div class="flex justify-between items-start">
+                    <div>
+                        <div class="text-[10px] font-bold text-blue-400 uppercase">${rec.mode} • ${rec.date}</div>
+                        <div class="text-sm text-white font-semibold mt-1">${rec.start} <i class="fa-solid fa-arrow-right mx-1 text-slate-500"></i> ${rec.target}</div>
+                    </div>
+                    <div class="text-right shrink-0 ml-2">
+                         <div class="text-xs text-green-400 font-mono font-bold">${rec.time}</div>
+                         <div class="text-[10px] text-slate-400">${rec.moves} Moves</div>
+                    </div>
+                </div>
+                ${pathHTML}
+            `;
+          list.appendChild(div);
+        });
+      }
+
+      window.clearRecords = function () {
+        if (confirm("Clear all your game history?")) {
+          localStorage.removeItem("anime_connect_records");
+          renderRecords();
+        }
+      };
+
+      // --- Archive Logic ---
+      async function initArchiveSetup() {
+        const list = getEl("archiveList");
+        if (!list) return;
+        list.innerHTML = '<div class="loader mx-auto"></div>';
+
+        try {
+          const challenges = DAILY_CHALLENGES; // Use inlined data
+          const now = new Date();
+          now.setHours(0, 0, 0, 0);
+
+          list.innerHTML = "";
+          const pastChallenges = challenges.filter((c) => {
+            const parts = c.date.split(" ");
+            const cDate = new Date(`${parts[1]} ${parts[0]}, ${parts[2]}`);
+            return cDate < now;
+          });
+
+          if (pastChallenges.length === 0) {
+            getEl("archiveEmpty").classList.remove("hidden");
+          } else {
+            getEl("archiveEmpty").classList.add("hidden");
+            pastChallenges.forEach((c) => {
+              const btn = document.createElement("button");
+              btn.className =
+                "w-full text-left p-3 bg-slate-800 hover:bg-slate-700 rounded-lg border border-slate-700 flex justify-between items-center transition-all group";
+              btn.innerHTML = `<div><div class="text-xs text-blue-400 font-bold">${c.date}</div><div class="text-sm font-semibold text-white mt-1">Start ID: ${c.startId} <i class="fa-solid fa-arrow-right mx-1 text-slate-500"></i> ID: ${c.endId}</div></div><div class="text-xs text-slate-500 group-hover:text-white"><i class="fa-solid fa-play"></i> Play</div>`;
+              btn.onclick = async () => {
+                const setupDiv = getEl("archiveSetup");
+                setupDiv.innerHTML =
+                  '<div class="loader mx-auto my-10"></div><p class="text-center text-slate-500">Loading Archive...</p>';
+                const start = await fetchAnimeById(c.startId);
+                await delay(400);
+                const end = await fetchAnimeById(c.endId);
+                if (start && end) {
+                  state.startAnime = start;
+                  state.targetAnime = end;
+                  state.currentDailySolution = c.solution;
+                  state.mode = "archive_play";
+                  state.language = "Japanese";
+                  initGame();
+                } else {
+                  alert("Failed to load archive data.");
+                  location.reload();
+                }
+              };
+              list.appendChild(btn);
+            });
+          }
+        } catch (e) {
+          console.error(e);
+          list.innerHTML =
+            '<div class="text-red-400 text-center text-sm">Failed to load archive.</div>';
+        }
+      }
+
+      // --- Hint Logic ---
+      window.checkHintAvailability = function () {
+        const moves = Math.floor((state.history.length - 1) / 2);
+        const btn = getEl("hintBtn");
+        const txt = getEl("hintBtnText");
+        if (!btn || !txt) return;
+
+        if (state.hintLevel === 0) {
+          btn.disabled = false;
+          btn.classList.remove("opacity-50", "cursor-not-allowed");
+          txt.innerText = "Show Hint (Top 3)";
+        } else if (state.hintLevel === 1) {
+          const diff = moves - state.lastHintMove;
+          const required = 2;
+          if (diff >= required) {
+            btn.disabled = false;
+            btn.classList.remove("opacity-50", "cursor-not-allowed");
+            txt.innerText = "Show Hint (Top 5)";
+          } else {
+            btn.disabled = true;
+            btn.classList.add("opacity-50", "cursor-not-allowed");
+            txt.innerText = `Wait ${required - diff} moves`;
+          }
+        } else {
+          btn.disabled = false;
+          btn.classList.remove("opacity-50", "cursor-not-allowed");
+          txt.innerText = "Show Hint (Top 5)";
+        }
+      };
+
+      window.showHint = async function () {
+        if (!state.targetAnime) return;
+        const btn = getEl("hintBtn");
+        btn.innerHTML =
+          '<div class="loader w-3 h-3 border-2 border-indigo-300"></div>';
+
+        const characters = await getAnimeStaff(state.targetAnime.mal_id);
+        const uniqueVAs = new Map();
+        characters.forEach((item) => {
+          if (!uniqueVAs.has(item.id)) uniqueVAs.set(item.id, item);
+          else if (
+            uniqueVAs.get(item.id).role !== "Main" &&
+            item.role === "Main"
+          )
+            uniqueVAs.set(item.id, item);
+        });
+        const sortedList = Array.from(uniqueVAs.values()).sort((a, b) => {
+          if (a.role === "Main" && b.role !== "Main") return -1;
+          if (a.role !== "Main" && b.role === "Main") return 1;
+          return 0;
+        });
+
+        let limit = state.hintLevel >= 1 ? 5 : 3;
+        const hintList = getEl("hintList");
+        hintList.innerHTML = "";
+
+        if (sortedList.length === 0) {
+          hintList.innerHTML = `<div class="text-slate-400 text-sm p-2">No ${state.language} voice actors found for target.</div>`;
+        } else {
+          sortedList.slice(0, limit).forEach((va) => {
+            const div = document.createElement("div");
+            div.className =
+              "flex items-center gap-3 bg-slate-800 p-2 rounded border border-slate-700";
+            div.innerHTML = `<img src="${va.image}" class="w-10 h-10 rounded-full object-cover"><div><div class="text-sm font-bold text-white">${va.name}</div><div class="text-xs text-slate-400">Voiced ${va.characterName}</div></div>`;
+            hintList.appendChild(div);
+          });
+        }
+
+        getEl("hintModal").classList.remove("hidden");
+        btn.innerHTML =
+          '<i class="fa-solid fa-lightbulb"></i> <span id="hintBtnText"></span>';
+        if (state.hintLevel === 0) {
+          state.hintLevel = 1;
+          state.lastHintMove = Math.floor((state.history.length - 1) / 2);
+        }
+        window.checkHintAvailability();
+      };
+      window.closeHint = function () {
+        getEl("hintModal").classList.add("hidden");
+      };
+
+      // --- Main Game Loop ---
+      function initGame() {
+        if (!state.startAnime || !state.targetAnime) return;
+        state.step = 1;
+        state.history = [];
+        state.currentType = "anime";
+        state.currentData = state.startAnime;
+        state.hintLevel = 0;
+        state.lastHintMove = 0;
+
+        getEl("setupScreen").classList.add("hidden");
+        getEl("gameScreen").classList.remove("hidden");
+        getEl("gameHeaderStats").classList.remove("hidden");
+        getEl("targetTitle").innerText = state.targetAnime.title;
+        getEl("targetThumb").src = state.targetAnime.images.jpg.image_url;
+        getEl("pathLog").classList.add("hidden");
+        getEl("historyChevron").className = "fa-solid fa-chevron-down";
+
+        window.checkHintAvailability();
+        startTimer();
+        updateGameState(state.startAnime, "anime");
+      }
+
+      async function updateGameState(newData, type) {
+        state.currentData = newData;
+        state.currentType = type;
+        state.history.push({ type, data: newData });
+        getEl("filterInput").value = "";
+
+        window.checkHintAvailability();
+        renderHistory();
+        renderHeader();
+        setLoading(true, "Loading...");
+        getEl("choiceList").innerHTML = "";
+
+        if (type === "anime" && newData.mal_id === state.targetAnime.mal_id) {
+          setLoading(false);
+          showWinScreen();
+          return;
+        }
+
+        if (type === "anime") {
+          const chars = await getAnimeStaff(newData.mal_id);
+          renderSeiyuuList(chars);
+        } else {
+          const roles = await getPersonRoles(newData.mal_id);
+          renderAnimeList(roles);
+        }
+        setLoading(false);
+      }
+
+      // --- Win Logic ---
+      function showWinScreen() {
+        stopTimer();
+        getEl("winScreen").classList.remove("hidden");
+        const moves = Math.floor((state.history.length - 1) / 2);
+        getEl("finalMoveCount").innerText = moves;
+        const timeTaken = getEl("gameTimerDisplay").innerText;
+        getEl("finalTimeCount").innerText = timeTaken;
+
+        saveGameRecord(moves, timeTaken);
+
+        const solutionContainer = getEl("dailySolutionContainer");
+        const userPathContainer = getEl("userFinalPath");
+        const solutionList = getEl("dailySolutionList");
+        const winPlayAgainBtn = getEl("winPlayAgainBtn");
+
+        if (state.mode === "daily") {
+          const options = { day: "2-digit", month: "short", year: "numeric" };
+          const todayStr = new Date()
+            .toLocaleDateString("en-GB", options)
+            .replace(/ /g, " ");
+          localStorage.setItem(
+            "anime_daily_" + todayStr,
+            JSON.stringify({ moves: moves, path: state.history }),
+          );
+          solutionContainer.classList.remove("hidden");
+          winPlayAgainBtn.classList.add("hidden");
+
+          userPathContainer.innerHTML = "";
+          state.history.slice(1).forEach((step) => {
+            const div = document.createElement("div");
+            div.className = "flex items-center gap-2";
+            div.innerHTML =
+              step.type === "person"
+                ? `<i class="fa-solid fa-microphone text-purple-400 w-4"></i> <span class="text-slate-300">${step.data.name}</span>`
+                : `<i class="fa-solid fa-film text-blue-400 w-4"></i> <span class="text-white font-bold">${step.data.title}</span>`;
+            userPathContainer.appendChild(div);
+          });
+
+          solutionList.innerHTML = "";
+          if (state.currentDailySolution) {
+            state.currentDailySolution.forEach((step) => {
+              const div = document.createElement("div");
+              div.className = "flex items-center gap-2";
+              div.innerHTML =
+                step.type === "person"
+                  ? `<i class="fa-solid fa-microphone text-purple-400 w-4"></i> <span class="text-slate-300">${step.name}</span><span class="text-slate-500 text-xs ml-1">(${step.info})</span>`
+                  : `<i class="fa-solid fa-film text-blue-400 w-4"></i> <span class="text-white font-bold">${step.name}</span>`;
+              solutionList.appendChild(div);
+            });
+          }
+        } else if (state.mode === "archive_play") {
+          solutionContainer.classList.remove("hidden");
+          winPlayAgainBtn.classList.remove("hidden");
+          userPathContainer.innerHTML = "";
+          state.history.slice(1).forEach((step) => {
+            const div = document.createElement("div");
+            div.className = "flex items-center gap-2";
+            div.innerHTML =
+              step.type === "person"
+                ? `<i class="fa-solid fa-microphone text-purple-400 w-4"></i> <span class="text-slate-300">${step.data.name}</span>`
+                : `<i class="fa-solid fa-film text-blue-400 w-4"></i> <span class="text-white font-bold">${step.data.title}</span>`;
+            userPathContainer.appendChild(div);
+          });
+          solutionList.innerHTML = "";
+          if (state.currentDailySolution) {
+            state.currentDailySolution.forEach((step) => {
+              const div = document.createElement("div");
+              div.className = "flex items-center gap-2";
+              div.innerHTML =
+                step.type === "person"
+                  ? `<i class="fa-solid fa-microphone text-purple-400 w-4"></i> <span class="text-slate-300">${step.name}</span>`
+                  : `<i class="fa-solid fa-film text-blue-400 w-4"></i> <span class="text-white font-bold">${step.name}</span>`;
+              solutionList.appendChild(div);
+            });
+          }
+        } else {
+          solutionContainer.classList.add("hidden");
+          winPlayAgainBtn.classList.remove("hidden");
+        }
+      }
+
+      // --- Navigation ---
+      window.goHome = function () {
+        stopTimer();
+        getEl("winScreen").classList.add("hidden");
+        getEl("gameScreen").classList.add("hidden");
+        getEl("gameHeaderStats").classList.add("hidden");
+        getEl("setupScreen").classList.remove("hidden");
+        if (state.mode === "daily") initDailySetup();
+      };
+
+      window.resetGame = function () {
+        window.goHome();
+        if (state.mode === "custom" || state.mode === "random") {
+          getEl("startInput").value = "";
+          getEl("endInput").value = "";
+          getEl("startSelected").classList.add("hidden");
+          getEl("endSelected").classList.add("hidden");
+          getEl("startInput").classList.remove("hidden");
+          getEl("endInput").classList.remove("hidden");
+          checkReady();
+        }
+      };
+
+      // --- Other Helpers (Random, Autocomplete) ---
+      async function fetchRandomTopAnime() {
+        const diff = getEl("difficultySelect").value;
+        const maxPage =
+          diff === "easy"
+            ? 8
+            : diff === "normal"
+              ? 20
+              : diff === "hard"
+                ? 40
+                : 80;
+        const page = Math.floor(Math.random() * maxPage) + 1;
+        try {
+          const res = await fetch(
+            `${JIKAN_BASE}/top/anime?page=${page}&limit=25&cb=${Date.now()}`,
+          );
+          if (!res.ok) throw new Error("API Limit");
+          const data = await res.json();
+          if (!data.data?.length) return null;
+          return data.data[Math.floor(Math.random() * data.data.length)];
+        } catch (e) {
+          return null;
+        }
+      }
+
+      function setRandomCard(type, anime) {
+        if (type === "start") state.startAnime = anime;
+        else state.targetAnime = anime;
+        const Cap = type.charAt(0).toUpperCase() + type.slice(1);
+        getEl(`rand${Cap}Placeholder`).classList.add("hidden");
+        const img = getEl(`rand${Cap}Img`);
+        img.src = anime.images.jpg.image_url;
+        img.classList.remove("hidden");
+        const name = getEl(`rand${Cap}Name`);
+        name.innerText = anime.title;
+        name.classList.replace("text-slate-500", "text-white");
+        getEl(`reroll${Cap}`).classList.remove("hidden");
+        checkRandomReady();
+      }
+
+      function resetRandomCard(type) {
+        const Cap = type.charAt(0).toUpperCase() + type.slice(1);
+        getEl(`rand${Cap}Placeholder`).classList.remove("hidden");
+        getEl(`rand${Cap}Img`).classList.add("hidden");
+        const name = getEl(`rand${Cap}Name`);
+        name.innerText = "???";
+        name.classList.replace("text-white", "text-slate-500");
+        getEl(`reroll${Cap}`).classList.add("hidden");
+      }
+
+      function checkRandomReady() {
+        if (state.startAnime && state.targetAnime) {
+          getEl("startRandomBtn").disabled = false;
+          getEl("startRandomBtn").classList.remove("hidden");
+        }
+      }
+
+      getEl("filterInput").addEventListener("input", (e) => {
+        const term = e.target.value.toLowerCase().trim();
+        Array.from(getEl("choiceList").getElementsByTagName("button")).forEach(
+          (btn) => {
+            btn.classList.toggle(
+              "hidden",
+              !btn.dataset.filterText.includes(term),
+            );
+          },
+        );
+      });
 
       setupAutocomplete(
         "startInput",

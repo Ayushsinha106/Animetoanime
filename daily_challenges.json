@@ -37,28 +37,28 @@
     },
     {
         "date": "10 Feb 2026",
-        "startId": 20,
-        "endId": 16498,
+        "startId": 16498,
+        "endId": 9253,
         "shortestPath": 2,
         "solution": [
             {
                 "type": "person",
-                "name": "Junko Takeuchi",
-                "info": "Naruto Uzumaki"
+                "name": "Hiroshi Kamiya",
+                "info": "Levi Ackerman"
             },
             {
                 "type": "anime",
-                "name": "Digimon Adventure",
+                "name": "Bungou Stray Dogs",
                 "info": ""
             },
             {
                 "type": "person",
-                "name": "Hiroaki Hirata",
-                "info": "Narrator"
+                "name": "Miyano mamoru",
+                "info": "Osamu Dazai"
             },
             {
                 "type": "anime",
-                "name": "Attack on Titan",
+                "name": "Steins;Gate",
                 "info": ""
             }
         ]

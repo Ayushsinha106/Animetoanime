@@ -1177,7 +1177,7 @@
             );
           const isMain = anime.role === "Main";
           const isTarget = anime.id === state.targetAnime.mal_id;
-          btn.innerHTML = `<img src="${anime.image}" class="w-9 h-12 md:w-10 md:h-14 rounded object-cover shadow-sm"><div class="flex-grow min-w-0"><div class="text-xs md:text-sm font-bold text-white group-hover:text-blue-400 transition-colors truncate">${anime.title}</div><div class="text-[10px] md:text-xs text-slate-400"><span class="${isMain ? "text-blue-400 font-semibold" : ""}">${anime.role}</span><span class="text-slate-600 mx-1">•</span><span class="text-slate-500">Voiced ${anime.character || "Unknown"}</span></div></div>${isTarget ? '<div class="px-2 py-1 bg-red-600 text-white text-[10px] font-bold rounded animate-pulse">GOAL</div>' : ""}`;
+          btn.innerHTML = `<img src="${anime.image}" class="w-9 h-12 md:w-10 md:h-14 rounded object-cover shadow-sm"><div class="flex-grow min-w-0"><div class="text-xs md:text-sm font-bold text-white group-hover:text-blue-400 transition-colors truncate" title="${anime.title}">${anime.title}</div><div class="text-[10px] md:text-xs text-slate-400"><span class="${isMain ? "text-blue-400 font-semibold" : ""}">${anime.role}</span><span class="text-slate-600 mx-1">•</span><span class="text-slate-500">Voiced ${anime.character || "Unknown"}</span></div></div>${isTarget ? '<div class="px-2 py-1 bg-red-600 text-white text-[10px] font-bold rounded animate-pulse">GOAL</div>' : ""}`;
           container.appendChild(btn);
         });
       }
@@ -1281,6 +1281,7 @@
             image: item.anime.images.jpg.image_url,
             role: item.role,
             character: item.character.name,
+            year: item.anime.year || "????",
           }));
           allRoles = [...allRoles, ...roles];
           hasNext = data.pagination?.has_next_page || false;

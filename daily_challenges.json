@@ -68,5 +68,95 @@
                 "info": "Nat"
             }
         ]
+    },
+    {
+        "date": "12 Feb 2026",
+        "startId": 40748,
+        "startName": "Jujutsu Kaisen",
+        "endId": 238,
+        "endName": "Meitantei Conan",
+        "shortestPath": 1,
+        "solution": [
+            {
+                "type": "person",
+                "name": "Yamaguchi Kappei",
+                "info": "Kechizu"
+            },
+            {
+                "type": "anime",
+                "name": "Meitantei Conan",
+                "info": "Kudo Shinichi"
+            }
+        ]
+    },
+    {
+        "date": "13 Feb 2026",
+        "startId": 22789,
+        "startName": "Barakamon",
+        "endId": 49709,
+        "endName": "To Your Eternity: 2nd Season",
+        "shortestPath": 2,
+        "solution": [
+            {
+                "type": "person",
+                "name": "Ono Daisuke",
+                "info": "Handa Seishuu"
+            },
+            {
+                "type": "anime",
+                "name": "Jojo's Bizarre Adventure part 3 Stardust Crusaders",
+                "info": "Jotaro Kujo"
+            },
+            {
+                "type": "person",
+                "name": "Koyasu Takehito",
+                "info": "Dio Brando"
+            },
+            {
+                "type": "anime",
+                "name": "To Your Eternity: 2nd Season",
+                "info": "Uralys Bonchien Nicoli La Tastypeach  "
+            }
+        ]
+    },
+    {
+        "date": "14 Feb 2026",
+        "startId": 10165,
+        "startName": "Nichijou",
+        "endId": 34599,
+        "endName": "Made in Abyss",
+        "shortestPath": 1,
+        "solution": [
+            {
+                "type": "person",
+                "name": "Tamura Mutsumi",
+                "info": "Boy"
+            },
+            {
+                "type": "anime",
+                "name": "Made in Abyss",
+                "info": "Nat"
+            }
+        ]
+    },
+    {
+        "date": "15 Feb 2026",
+        "startId": 10165,
+        "startName": "Nichijou",
+        "endId": 34599,
+        "endName": "Made in Abyss",
+        "shortestPath": 1,
+        "solution": [
+            {
+                "type": "person",
+                "name": "Tamura Mutsumi",
+                "info": "Boy"
+            },
+            {
+                "type": "anime",
+                "name": "Made in Abyss",
+                "info": "Nat"
+            }
+        ]
     }
 ]

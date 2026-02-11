@@ -1,25 +1,5 @@
 [
     {
-        "date": "08 Feb 2026",
-        "startId": 10165,
-        "startName": "Nichijou",
-        "endId": 34599,
-        "endName": "Made in Abyss",
-        "shortestPath": 1,
-        "solution": [
-            {
-                "type": "person",
-                "name": "Tamura Mutsumi",
-                "info": "Boy"
-            },
-            {
-                "type": "anime",
-                "name": "Made in Abyss",
-                "info": "Nat"
-            }
-        ]
-    },
-    {
         "date": "09 Feb 2026",
         "startId": 52299,
         "startName": "Solo Leveling",
@@ -66,6 +46,26 @@
                 "type": "anime",
                 "name": "Steins;Gate",
                 "info": ""
+            }
+        ]
+    },
+    {
+        "date": "11 Feb 2026",
+        "startId": 10165,
+        "startName": "Nichijou",
+        "endId": 34599,
+        "endName": "Made in Abyss",
+        "shortestPath": 1,
+        "solution": [
+            {
+                "type": "person",
+                "name": "Tamura Mutsumi",
+                "info": "Boy"
+            },
+            {
+                "type": "anime",
+                "name": "Made in Abyss",
+                "info": "Nat"
             }
         ]
     }

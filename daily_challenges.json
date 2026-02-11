@@ -121,21 +121,31 @@
     },
     {
         "date": "14 Feb 2026",
-        "startId": 10165,
-        "startName": "Nichijou",
-        "endId": 34599,
-        "endName": "Made in Abyss",
+        "startId": 32281,
+        "startName": "Kimi no Na wa",
+        "endId": 21,
+        "endName": "One Piece",
         "shortestPath": 1,
         "solution": [
             {
                 "type": "person",
-                "name": "Tamura Mutsumi",
-                "info": "Boy"
+                "name": "Aoi Yuuki",
+                "info": "Natori Sayaka"
             },
             {
                 "type": "anime",
-                "name": "Made in Abyss",
-                "info": "Nat"
+                "name": "Hyakuemu",
+                "info": "Komiya"
+            },
+            {
+                "type": "person",
+                "name": "Kenjiro Tsuda",
+                "info": "Kaidou"
+            },
+            {
+                "type": "anime",
+                "name": "One Piece",
+                "info": "Vinsmoke Yonji"
             }
         ]
     },

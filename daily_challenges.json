@@ -73,7 +73,7 @@
         "date": "12 Feb 2026",
         "startId": 40748,
         "startName": "Jujutsu Kaisen",
-        "endId": 238,
+        "endId": 235,
         "endName": "Meitantei Conan",
         "shortestPath": 1,
         "solution": [
@@ -166,6 +166,26 @@
                 "type": "anime",
                 "name": "Made in Abyss",
                 "info": "Nat"
+            }
+        ]
+    },
+    {
+        "date": "09 Mar 2026",
+        "startId": 57658,
+        "startName": "Jujutsu Kaisen: Season 3",
+        "endId": 55830,
+        "endName": "Fate/strange Fake",
+        "shortestPath": 1,
+        "solution": [
+            {
+                "type": "person",
+                "name": "Enoki Junya",
+                "info": "Itadori Yuji"
+            },
+            {
+                "type": "anime",
+                "name": "Fate/strange Fake",
+                "info": "Dioland Faldeus"
             }
         ]
     }

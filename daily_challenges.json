@@ -170,7 +170,47 @@
         ]
     },
     {
+        "date": "08 Mar 2026",
+        "startId": 57658,
+        "startName": "Jujutsu Kaisen: Season 3",
+        "endId": 55830,
+        "endName": "Fate/strange Fake",
+        "shortestPath": 1,
+        "solution": [
+            {
+                "type": "person",
+                "name": "Enoki Junya",
+                "info": "Itadori Yuji"
+            },
+            {
+                "type": "anime",
+                "name": "Fate/strange Fake",
+                "info": "Dioland Faldeus"
+            }
+        ]
+    },
+    {
         "date": "09 Mar 2026",
+        "startId": 57658,
+        "startName": "Jujutsu Kaisen: Season 3",
+        "endId": 55830,
+        "endName": "Fate/strange Fake",
+        "shortestPath": 1,
+        "solution": [
+            {
+                "type": "person",
+                "name": "Enoki Junya",
+                "info": "Itadori Yuji"
+            },
+            {
+                "type": "anime",
+                "name": "Fate/strange Fake",
+                "info": "Dioland Faldeus"
+            }
+        ]
+    },
+    {
+        "date": "10 Mar 2026",
         "startId": 57658,
         "startName": "Jujutsu Kaisen: Season 3",
         "endId": 55830,

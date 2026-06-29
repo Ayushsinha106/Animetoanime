@@ -293,6 +293,7 @@
                 <option value="normal" selected>Normal (Top 500)</option>
                 <option value="hard">Hard (Top 1000)</option>
                 <option value="super">Super Hard (Top 2000)</option>
+                <option value="hell">Hell (Top 5000)</option>
               </select>
             </div>
 
@@ -1978,7 +1979,9 @@
               ? 20
               : diff === "hard"
                 ? 40
-                : 80;
+                : diff === "super"
+                  ? 80
+                  : 200;
         const page = Math.floor(Math.random() * maxPage) + 1;
         try {
           const res = await fetch(

@@ -177,17 +177,6 @@
             <i class="fa-solid fa-dice"></i> Random
           </button>
           <button
-            onclick="switchMode('daily')"
-            id="tabDaily"
-            class="tab-inactive flex-1 md:flex-none px-4 py-2 rounded-lg font-semibold border transition-all shadow-lg flex items-center justify-center gap-2 text-xs md:text-sm relative"
-          >
-            <i class="fa-solid fa-calendar-day"></i> Daily
-            <span
-              id="dailyNotificationDot"
-              class="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full animate-pulse"
-            ></span>
-          </button>
-          <button
             onclick="switchMode('archive')"
             id="tabArchive"
             class="tab-inactive flex-1 md:flex-none px-4 py-2 rounded-lg font-semibold border transition-all shadow-lg flex items-center justify-center gap-2 text-xs md:text-sm"
@@ -1238,7 +1227,7 @@
 
       async function searchAnime(query) {
         const data = await fetchJikan(
-          `/anime?q=${encodeURIComponent(query)}&limit=5&sfw=true&order_by=popularity`,
+          `/anime?q=${encodeURIComponent(query)}&limit=15&sfw=true`, // removed &order_by=popularity to get more relevant results
         );
         return data ? data.data : [];
       }
